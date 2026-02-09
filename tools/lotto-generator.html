@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXX"
+     crossorigin="anonymous"></script>
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-9J3H9RR9ZD"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
@@ -19,8 +21,10 @@
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>로또 시뮬레이터 (가상 추첨) - 이지툴즈</title>
-    <link rel="stylesheet" href="../css/style.css">
+    <title>로또 6/45 번호 생성기 & 당첨 시뮬레이터 - 이지툴즈</title>
+    <meta name="description" content="이번 주 로또 예상 번호를 무료로 생성하고 가상으로 추첨해보세요. 역대 당첨 확률 분석과 실수령액 계산 정보까지 제공합니다.">
+    
+    <link rel="stylesheet" href="../css/style.css?v=2">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
         :root { --primary: #F59E0B; }
@@ -42,34 +46,34 @@
         
         /* 섹션별 스타일 */
         .winning-section {
-            background: #FFFBEB; border: 2px solid #FCD34D; 
+            background: var(--hover-bg); border: 2px solid #FCD34D; 
             border-radius: 12px; padding: 20px; margin-bottom: 20px;
             text-align: center;
         }
         .win-balls-wrapper { display: flex; justify-content: center; align-items: center; gap: 5px; flex-wrap: wrap; margin-top: 10px; }
-        .plus-sign { font-size: 1.5rem; color: #aaa; margin: 0 10px; }
+        .plus-sign { font-size: 1.5rem; color: var(--text-sub); margin: 0 10px; }
 
         /* 결과 요약표 */
         .summary-box {
             display: flex; gap: 10px; margin-bottom: 20px;
         }
         .sum-card {
-            flex: 1; background: #fff; border: 1px solid #ddd; 
+            flex: 1; background: var(--card-bg); border: 1px solid var(--border); 
             border-radius: 8px; padding: 15px; text-align: center;
         }
-        .sum-label { font-size: 0.85rem; color: #666; margin-bottom: 5px; }
-        .sum-val { font-size: 1.1rem; font-weight: bold; color: #333; }
+        .sum-label { font-size: 0.85rem; color: var(--text-sub); margin-bottom: 5px; }
+        .sum-val { font-size: 1.1rem; font-weight: bold; color: var(--text-main); }
         .profit-plus { color: #DC2626; } /* 이득 */
         .profit-minus { color: #2563EB; } /* 손해 */
 
         /* 구매 내역 리스트 */
         .ticket-list { 
             max-height: 500px; overflow-y: auto; 
-            border: 1px solid #eee; border-radius: 8px; padding: 10px;
+            border: 1px solid var(--border); border-radius: 8px; padding: 10px;
         }
         .ticket-row {
             display: flex; justify-content: space-between; align-items: center;
-            padding: 10px; border-bottom: 1px solid #f0f0f0;
+            padding: 10px; border-bottom: 1px solid var(--border);
         }
         .ticket-row:last-child { border-bottom: none; }
         .rank-badge {
@@ -81,7 +85,7 @@
         .rank-3 { background: #F59E0B; }
         .rank-4 { background: #2563EB; }
         .rank-5 { background: #10B981; }
-        .rank-0 { background: #E5E7EB; color: #999; } /* 꽝 */
+        .rank-0 { background: var(--input-bg); color: var(--text-sub); } /* 꽝 */
 
         /* 모바일 대응 */
         @media (max-width: 600px) {
@@ -89,6 +93,13 @@
             .ticket-row { flex-direction: column; gap: 5px; align-items: flex-start; }
             .ticket-right { width: 100%; display: flex; justify-content: space-between; align-items: center; }
         }
+        
+        /* 텍스트 컨텐츠 스타일 */
+        .info-section h3 { margin-top: 30px; color: var(--text-main); border-left: 4px solid var(--primary); padding-left: 10px; }
+        .info-section ul { padding-left: 20px; line-height: 1.8; }
+        .info-section li { margin-bottom: 8px; color: var(--text-sub); }
+        .info-section p { color: var(--text-sub); line-height: 1.7; }
+        .highlight-box { background: var(--hover-bg); padding: 15px; border-radius: 8px; border: 1px dashed var(--border); margin: 20px 0; }
     </style>
     <link rel="manifest" href="../manifest.json">
 
@@ -102,30 +113,30 @@
         <i class="fas fa-moon"></i>
     </button>
 
-        <h1><i class="fas fa-ticket-alt"></i> 로또 시뮬레이터</h1>
+        <h1><i class="fas fa-ticket-alt"></i> 로또 번호 생성기</h1>
         
         <div class="input-group" style="display:flex; gap:10px; align-items:flex-end;">
             <div style="flex:1;">
-                <label>구매 수량 (1~100장)</label>
+                <label>생성할 게임 수 (최대 100)</label>
                 <input type="number" id="buyCount" value="5" min="1" max="100" placeholder="장수">
             </div>
-            <button class="calc-btn" style="flex:1; margin:0;" onclick="runSimulation()">구매 및 추첨 🎰</button>
+            <button class="calc-btn" style="flex:1; margin:0;" onclick="runSimulation()">번호 생성 및 추첨 🎰</button>
         </div>
 
         <div id="simulationResult" style="display:none;">
             <div class="winning-section">
-                <div style="font-weight:bold; color:#D97706;">이번 회차 당첨 번호</div>
+                <div style="font-weight:bold; color:var(--primary);">이번 회차 가상 당첨 번호</div>
                 <div class="win-balls-wrapper" id="winBalls">
                     </div>
             </div>
 
             <div class="summary-box">
                 <div class="sum-card">
-                    <div class="sum-label">총 구매액</div>
+                    <div class="sum-label">총 비용</div>
                     <div class="sum-val" id="totalCost">0원</div>
                 </div>
                 <div class="sum-card">
-                    <div class="sum-label">총 당첨금</div>
+                    <div class="sum-label">당첨금</div>
                     <div class="sum-val" id="totalPrize">0원</div>
                 </div>
                 <div class="sum-card">
@@ -134,26 +145,43 @@
                 </div>
             </div>
 
-            <h3 style="text-align:left; font-size:1rem; margin-bottom:10px;">📜 구매 내역 상세</h3>
+            <h3 style="text-align:left; font-size:1rem; margin-bottom:10px;">📜 생성된 번호 및 결과</h3>
             <div class="ticket-list" id="ticketList">
                 </div>
         </div>
 
         <div class="info-section">
-            <h2>로또 10만 원어치 사면 얼마나 당첨될까?</h2>
-            <p>이 시뮬레이터는 실제 로또 6/45 규칙을 완벽하게 적용하여 결과를 예측해 줍니다. 1등부터 5등까지의 당첨 조건과 평균 당첨금은 다음과 같습니다.</p>
+            <h2>💰 로또 1등 당첨 확률의 진실</h2>
+            <p>매주 토요일 저녁 8시 35분, 수많은 사람의 희비가 엇갈립니다. 동행복권 로또 6/45는 1부터 45까지의 숫자 중 6개를 맞추는 게임입니다. 단순해 보이지만, 1등 당첨 확률은 무려 <strong>8,145,060분의 1</strong>입니다. 이는 벼락을 맞을 확률보다 낮으며, 쌀 한 가마니(80kg)에 들어있는 쌀알 중 하나를 집어내는 확률과 비슷합니다.</p>
 
-            <h3>1. 등수별 당첨 조건 및 금액 (가상)</h3>
+            <h3>1. 등수별 당첨 조건 및 상금 (세전 기준)</h3>
+            <p>로또 당첨금은 매회 판매액에 따라 달라지지만, 평균적인 수령액은 다음과 같습니다. 4등과 5등은 고정 당첨금을 받습니다.</p>
             <ul>
-                <li><strong>1등 (6개 일치):</strong> 약 20억 원 (확률 1/8,145,060)</li>
-                <li><strong>2등 (5개 + 보너스):</strong> 약 5,000만 원</li>
-                <li><strong>3등 (5개 일치):</strong> 약 150만 원</li>
-                <li><strong>4등 (4개 일치):</strong> 50,000원 (고정)</li>
-                <li><strong>5등 (3개 일치):</strong> 5,000원 (고정)</li>
+                <li><strong>1등 (6개 모두 일치):</strong> 평균 20억 원 ~ 50억 원 (확률 0.000012%)</li>
+                <li><strong>2등 (5개 + 보너스 번호):</strong> 평균 5,000만 원 (확률 0.00007%)</li>
+                <li><strong>3등 (5개 일치):</strong> 평균 150만 원 (확률 0.002%)</li>
+                <li><strong>4등 (4개 일치):</strong> 50,000원 (확률 0.13%)</li>
+                <li><strong>5등 (3개 일치):</strong> 5,000원 (확률 2.22%)</li>
             </ul>
 
-            <h3>2. 로또의 냉정한 현실</h3>
-            <p>통계적으로 로또의 기대 수익률은 약 50%입니다. 즉, 10,000원을 사면 평균적으로 5,000원만 돌아온다는 뜻입니다. 이 시뮬레이터를 통해 100장을 사도 5등(5천 원) 몇 개 건지기 힘들다는 '확률의 무서움'을 직접 체험해 보세요. 복권은 투자가 아니라 소액으로 즐기는 오락이어야 합니다.</p>
+            <div class="highlight-box">
+                <strong>💡 로또 세금 계산법 (실수령액)</strong><br>
+                당첨금이 20억 원이라면 다 받을 수 있을까요? 아닙니다. 로또 당첨금은 '기타소득'으로 분류되어 세금을 뗍니다.
+                <ul>
+                    <li><strong>3억 원 이하:</strong> 22% (소득세 20% + 주민세 2%)</li>
+                    <li><strong>3억 원 초과:</strong> 33% (소득세 30% + 주민세 3%)</li>
+                </ul>
+                예를 들어 20억 원에 당첨되었다면, 약 33%인 6억 6천만 원을 세금으로 내고 <strong>실수령액은 약 13억 4천만 원</strong>이 됩니다. (참고: 3등 이하는 2023년부터 세금이 면제되어 당첨금 전액을 수령합니다.)
+            </div>
+
+            <h3>2. 로또 번호 추천, 과학적 근거가 있을까?</h3>
+            <p>많은 사이트에서 '로또 명당', '예상 번호 분석'을 제공하지만, 수학적으로 로또는 <strong>독립 시행</strong>입니다. 즉, 지난주에 1번이 나왔다고 해서 이번 주에 1번이 나올 확률이 줄어들거나 늘어나지 않습니다. 모든 번호가 나올 확률은 매회 똑같이 1/45입니다. 따라서 자동(Auto)으로 구매하든, 수동으로 찍든 당첨 확률은 동일합니다.</p>
+
+            <h3>3. 재미로 보는 역대 '가장 많이 나온 번호'</h3>
+            <p>비록 확률은 동일하지만, 통계적으로 자주 등장한 번호들은 존재합니다. 역대 로또 추첨 결과를 분석해보면 <strong>1번, 27번, 34번, 43번</strong> 등이 상대적으로 많이 출현했습니다. 반면 9번, 22번 등은 비교적 적게 나왔습니다. 이지툴즈 시뮬레이터는 이러한 통계를 맹신하기보다는, 재미 삼아 랜덤 번호를 조합해보는 용도로 활용하시기 바랍니다.</p>
+            
+            <h3>4. 로또 구매 팁 및 주의사항</h3>
+            <p>로또는 소액으로 일주일의 행복을 사는 오락입니다. 지나친 몰입은 도박 중독으로 이어질 수 있습니다. 1회 구매 한도는 10만 원으로 제한되어 있으며, 청소년은 구매할 수 없습니다. 이번 주 여러분에게 행운이 깃들기를 바랍니다!</p>
         </div>
 
         <a href="../index.html" class="back-btn">← 메인으로 돌아가기</a>
@@ -180,9 +208,18 @@
             return Array.from(nums).sort((a,b) => a-b);
         }
 
+        // 공 색상 코드 (스크립트용)
+        function getBallColor(n) {
+            if(n<=10) return "#FBC400";
+            if(n<=20) return "#69C8F2";
+            if(n<=30) return "#FF7272";
+            if(n<=40) return "#AAAAAA";
+            return "#B0D840";
+        }
+
         function runSimulation() {
             const count = parseInt(document.getElementById('buyCount').value);
-            if(count < 1 || count > 100) { alert("1장에서 100장 사이로 입력해주세요."); return; }
+            if(count < 1 || count > 100) { showToast("1장에서 100장 사이로 입력해주세요."); return; }
 
             // 1. 당첨 번호 생성 (6개 + 보너스 1개)
             const winSet = new Set();
@@ -190,14 +227,14 @@
                 winSet.add(Math.floor(Math.random() * 45) + 1);
             }
             const winArr = Array.from(winSet);
-            const bonus = winArr.pop(); // 마지막 숫자를 보너스로 씀
-            const mains = winArr.sort((a,b) => a-b); // 나머지 6개 정렬
+            const bonus = winArr.pop(); 
+            const mains = winArr.sort((a,b) => a-b); 
 
             // 당첨 번호 화면 표시
             const winDiv = document.getElementById('winBalls');
             winDiv.innerHTML = mains.map(n => makeBall(n)).join('') + 
                                `<span class="plus-sign">+</span>` + 
-                               makeBall(bonus) + `<div style="font-size:0.8rem; color:#666; margin-top:5px; width:100%;">보너스</div>`;
+                               makeBall(bonus) + `<div style="font-size:0.8rem; color:var(--text-sub); margin-top:5px; width:100%;">보너스</div>`;
 
             // 2. 구매 및 결과 확인
             const listDiv = document.getElementById('ticketList');
@@ -209,12 +246,11 @@
             for(let i=0; i<count; i++) {
                 const myNums = generateSet();
                 
-                // 일치 개수 확인
                 let matchCnt = 0;
                 myNums.forEach(n => { if(mains.includes(n)) matchCnt++; });
                 
                 let isBonus = myNums.includes(bonus);
-                let rank = 0; // 0은 꽝
+                let rank = 0; 
                 let prize = 0;
 
                 if(matchCnt === 6) { rank = 1; prize = 2000000000; }
@@ -225,28 +261,23 @@
 
                 totalPrize += prize;
 
-                // 리스트에 추가
                 const row = document.createElement('div');
                 row.className = 'ticket-row';
                 
-                // 번호 렌더링 (맞춘 번호 테두리 강조 효과 등 줄 수 있지만 여기선 단순 표시)
                 let ballHtml = myNums.map(n => {
-                    // 당첨번호나 보너스번호와 일치하면 그대로, 아니면 투명도 조절
                     let isHit = mains.includes(n) || (rank === 2 && n === bonus);
-                    let style = isHit ? "" : "opacity:0.3; transform:scale(0.9);";
-                    // 꽝이면 그냥 다 흐리게 하되, 번호는 보이게
-                    if(rank === 0) style = "opacity:0.6; background-color:#ccc; box-shadow:none;"; 
+                    let opacity = isHit ? "1" : "0.3";
+                    if(rank === 0) opacity = "0.6"; // 꽝일 때
                     
-                    // 공 생성 (일치 여부 상관없이 색상은 유지하되 스타일 적용)
-                    // 복잡도를 줄이기 위해 기본 공 생성 후 style 추가
-                    return `<div class="ball" style="${style} background-color:${getBallColor(n)}">${n}</div>`;
+                    // 다크모드 대응을 위해 인라인 스타일 최소화하고 클래스 활용
+                    return `<div class="ball" style="background-color:${getBallColor(n)}; opacity:${opacity}; transform:${isHit?'scale(1.1)':'scale(0.9)'}">${n}</div>`;
                 }).join('');
 
                 let rankBadge = rank > 0 ? `<span class="rank-badge rank-${rank}">${rank}등</span>` : `<span class="rank-badge rank-0">꽝</span>`;
-                let prizeText = rank > 0 ? `<span style="font-size:0.9rem; font-weight:bold; color:#333;">${prize.toLocaleString()}원</span>` : "";
+                let prizeText = rank > 0 ? `<span style="font-size:0.9rem; font-weight:bold; color:var(--text-main);">${prize.toLocaleString()}원</span>` : "";
 
                 row.innerHTML = `
-                    <div style="display:flex;">${ballHtml}</div>
+                    <div style="display:flex; flex-wrap:wrap;">${ballHtml}</div>
                     <div class="ticket-right" style="display:flex; gap:10px; align-items:center;">
                         ${prizeText} ${rankBadge}
                     </div>
@@ -263,18 +294,13 @@
             
             const rateObj = document.getElementById('profitRate');
             rateObj.innerText = (profit > 0 ? "+" : "") + rate + "%";
-            rateObj.className = "sum-val " + (profit >= 0 ? "profit-plus" : "profit-minus");
+            
+            // 수익률 색상 클래스 초기화 및 재설정
+            rateObj.className = "sum-val";
+            if(profit >= 0) rateObj.classList.add("profit-plus");
+            else rateObj.classList.add("profit-minus");
 
             document.getElementById('simulationResult').style.display = 'block';
-        }
-
-        // 공 색상 코드 반환 함수 (내부용)
-        function getBallColor(n) {
-            if(n<=10) return "#FBC400";
-            if(n<=20) return "#69C8F2";
-            if(n<=30) return "#FF7272";
-            if(n<=40) return "#AAAAAA";
-            return "#B0D840";
         }
     </script>
 
@@ -293,34 +319,25 @@
     </script>
 
     <script>
-        // 기존 alert() 함수를 가로채서 토스트로 보여주는 마법의 코드
+        // 토스트 알림 기능
         window.alert = function(message) {
             showToast(message);
         };
 
         function showToast(message) {
-            // 컨테이너가 없으면 생성
             let container = document.getElementById('toast-container');
             if (!container) {
                 container = document.createElement('div');
                 container.id = 'toast-container';
                 document.body.appendChild(container);
             }
-
-            // 메시지 박스 생성
             const toast = document.createElement('div');
             toast.className = 'toast-message';
-            // 아이콘과 메시지 결합
             toast.innerHTML = `<i class="fas fa-check-circle"></i> <span>${message}</span>`;
-
             container.appendChild(toast);
-
-            // 애니메이션 시작
             requestAnimationFrame(() => {
                 setTimeout(() => { toast.classList.add('show'); }, 10);
             });
-
-            // 2.5초 후 제거
             setTimeout(() => {
                 toast.classList.remove('show');
                 setTimeout(() => { 
@@ -330,6 +347,4 @@
         }
     </script>
 </body>
-
-
 </html>

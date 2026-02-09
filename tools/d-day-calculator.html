@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXX"
+     crossorigin="anonymous"></script>
+
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-9J3H9RR9ZD"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
@@ -19,18 +22,30 @@
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>D-Day 계산기 (기념일, 시험, 디데이) - 이지툴즈</title>
-    <link rel="stylesheet" href="../css/style.css">
+    <title>D-Day 계산기 (커플 기념일, 수능, 전역일 계산) - 이지툴즈</title>
+    <meta name="description" content="커플 100일 기념일, 수능 D-Day, 군대 전역일 등 중요한 날짜를 정확하게 계산해 드립니다. 기준일 포함 여부(1일/0일) 옵션으로 헷갈리는 날짜 계산을 한 번에 해결하세요.">
+    
+    <link rel="stylesheet" href="../css/style.css?v=2">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
         :root { --primary: #F43F5E; }
         .date-picker-area { background: #FFF1F2; padding: 20px; border-radius: 12px; margin-bottom: 20px; border: 1px solid #FECDD3; }
-        .result-card { display: flex; justify-content: space-between; align-items: center; padding: 15px; border-bottom: 1px solid #eee; }
+        
+        [data-theme="dark"] .date-picker-area { background: #881337; border-color: #BE123C; }
+
+        .result-card { display: flex; justify-content: space-between; align-items: center; padding: 15px; border-bottom: 1px solid var(--border); }
         .result-card:last-child { border-bottom: none; }
-        .d-day-label { font-weight: bold; color: #555; }
+        .d-day-label { font-weight: bold; color: var(--text-main); }
         .d-day-date { color: var(--primary); font-weight: bold; }
         .main-result { text-align: center; font-size: 2.5rem; font-weight: 800; color: var(--primary); margin: 20px 0; }
-        .sub-info { text-align: center; color: #888; font-size: 0.9rem; margin-bottom: 20px; }
+        .sub-info { text-align: center; color: var(--text-sub); font-size: 0.9rem; margin-bottom: 20px; }
+        
+        /* 정보 섹션 스타일 강화 */
+        .info-section h3 { margin-top: 30px; color: var(--text-main); border-left: 4px solid var(--primary); padding-left: 10px; }
+        .info-section ul { padding-left: 20px; line-height: 1.8; }
+        .info-section li { margin-bottom: 8px; color: var(--text-sub); }
+        .info-section p { color: var(--text-sub); line-height: 1.7; }
+        .highlight-box { background: var(--hover-bg); padding: 15px; border-radius: 8px; border: 1px dashed var(--border); margin: 20px 0; color: var(--text-main); }
     </style>
     <link rel="manifest" href="../manifest.json">
 
@@ -52,8 +67,8 @@
                 <input type="date" id="baseDate" onchange="calcDday()">
             </div>
             <div class="input-group" style="display:flex; gap:10px; align-items:center; margin-bottom:0;">
-                <input type="checkbox" id="includeToday" checked onchange="calcDday()" style="width:auto;">
-                <label for="includeToday" style="margin:0; font-weight:normal;">기준일 1일로 포함 (커플 기념일 등)</label>
+                <input type="checkbox" id="includeToday" checked onchange="calcDday()" style="width:20px; height:20px; accent-color:var(--primary); cursor:pointer;">
+                <label for="includeToday" style="margin:0; font-weight:normal; cursor:pointer;">기준일 1일로 포함 (커플 기념일 등)</label>
             </div>
         </div>
 
@@ -61,7 +76,7 @@
             <div class="sub-info">기준일로부터 오늘은</div>
             <div class="main-result" id="todayCount">D+0</div>
             
-            <hr style="border:0; border-top:1px dashed #ddd; margin:20px 0;">
+            <hr style="border:0; border-top:1px dashed var(--border); margin:20px 0;">
 
             <div class="result-card">
                 <span class="d-day-label">100일</span>
@@ -82,18 +97,23 @@
         </div>
 
         <div class="info-section">
-            <h2>D-Day 계산, '1일' 포함 여부가 헷갈린다면?</h2>
-            <p>기념일을 챙길 때 가장 헷갈리는 것이 바로 <strong>"오늘을 1일로 칠까, 말까?"</strong>입니다. 계산 방식에 따라 날짜가 하루씩 차이가 나기 때문에 주의해야 합니다.</p>
+            <h2>📅 D-Day 계산, '1일' 포함 여부가 헷갈린다면?</h2>
+            <p>기념일이나 디데이를 챙길 때 가장 헷갈리는 것이 바로 <strong>"오늘을 1일로 칠까, 말까?"</strong>입니다. 계산 방식에 따라 날짜가 하루씩 차이가 나기 때문에 용도에 맞는 정확한 계산이 필요합니다.</p>
 
-            <h3>1. 커플 기념일 vs 시험 D-Day</h3>
+            <h3>1. 용도별 계산 방법 (D+ vs D-)</h3>
             <ul>
-                <li><strong>커플 기념일 (만난 날 = 1일):</strong> 보통 연인 사이에서는 사귀기 시작한 그날을 1일로 칩니다. 따라서 100일 기념일은 만난 날로부터 99일 뒤가 됩니다. (본 계산기의 '기준일 1일 포함' 체크)</li>
-                <li><strong>시험/수능 D-Day (남은 기간):</strong> 시험 당일은 포함하지 않고, 오늘부터 며칠이 '남았는지'를 셉니다. 내일이 시험이라면 D-1이 됩니다. (체크 해제)</li>
-                <li><strong>만 나이/행정 (0일 시작):</strong> 태어난 날을 0일로 보고 만 하루가 지나야 1일이 되는 방식입니다.</li>
+                <li><strong>커플 기념일 (만난 날 = 1일):</strong> 한국에서 연인들은 보통 사귀기 시작한 날을 1일로 칩니다. 따라서 100일 기념일은 만난 날로부터 99일 뒤가 됩니다. (옵션: '기준일 1일 포함' 체크 ✅)</li>
+                <li><strong>시험/수능 D-Day (남은 기간):</strong> 시험 당일은 포함하지 않고, 오늘부터 며칠이 '남았는지'를 셉니다. 내일이 시험이라면 D-1이 됩니다. (옵션: 체크 해제 ⬜)</li>
+                <li><strong>만 나이/신생아 (태어난 날 = 0일):</strong> 아기가 태어난 날은 생후 0일이며, 만 하루가 지나야 1일이 됩니다. (옵션: 체크 해제 ⬜)</li>
             </ul>
 
-            <h3>2. 기념일 계산 꿀팁</h3>
-            <p>100일, 200일 단위로 챙기는 것은 한국의 독특한 기념일 문화입니다. 서양에서는 주로 1년 단위(Anniversary)를 중요하게 생각합니다. 최근에는 1000일이나 10주년 같은 굵직한 날짜 위주로 챙기는 실속파 커플들도 늘고 있습니다. 중요한 날짜를 미리 계산해서 달력에 표시해두면 센스 있는 연인이 될 수 있습니다.</p>
+            <div class="highlight-box">
+                <strong>💡 한국의 독특한 기념일 문화</strong><br>
+                100일, 200일, 1000일 단위로 챙기는 것은 한국의 독특한 연애 문화입니다. 서양에서는 주로 1년 단위(Anniversary)를 중요하게 생각합니다. 최근에는 실속파 커플들을 중심으로 100일, 1주년, 1000일 등 굵직한 기념일만 챙기는 추세이기도 합니다.
+            </div>
+
+            <h3>2. 군대 전역일 계산 (복무일수)</h3>
+            <p>군 복무 기간을 계산할 때는 입대일을 1일로 쳐서 계산합니다. 육군 기준 18개월 복무 시, 입대일로부터 정확히 전역 예정일을 계산하여 휴가 계획 등을 세울 수 있습니다. (전역일 D-Day는 전역 날짜를 기준일로 잡고 '체크 해제'를 하면 남은 일수가 나옵니다.)</p>
         </div>
 
         <a href="../index.html" class="back-btn">← 메인으로 돌아가기</a>
@@ -119,8 +139,8 @@
 
             // 메인 D-day 표시
             let dCount = "";
-            if(diffDays > 0) dCount = `D+${isInclude ? diffDays + 1 : diffDays}`;
-            else if(diffDays < 0) dCount = `D${diffDays}`; // D-10 형태
+            if(diffDays > 0) dCount = `D+${isInclude ? diffDays + 1 : diffDays}`; // 과거 날짜
+            else if(diffDays < 0) dCount = `D${diffDays}`; // 미래 날짜 (D-10)
             else dCount = isInclude ? "D+1 (오늘)" : "D-Day (오늘)";
             
             document.getElementById('todayCount').innerText = dCount;
@@ -162,34 +182,25 @@
     </script>
 
     <script>
-        // 기존 alert() 함수를 가로채서 토스트로 보여주는 마법의 코드
+        // 토스트 알림 기능
         window.alert = function(message) {
             showToast(message);
         };
 
         function showToast(message) {
-            // 컨테이너가 없으면 생성
             let container = document.getElementById('toast-container');
             if (!container) {
                 container = document.createElement('div');
                 container.id = 'toast-container';
                 document.body.appendChild(container);
             }
-
-            // 메시지 박스 생성
             const toast = document.createElement('div');
             toast.className = 'toast-message';
-            // 아이콘과 메시지 결합
             toast.innerHTML = `<i class="fas fa-check-circle"></i> <span>${message}</span>`;
-
             container.appendChild(toast);
-
-            // 애니메이션 시작
             requestAnimationFrame(() => {
                 setTimeout(() => { toast.classList.add('show'); }, 10);
             });
-
-            // 2.5초 후 제거
             setTimeout(() => {
                 toast.classList.remove('show');
                 setTimeout(() => { 
@@ -199,6 +210,4 @@
         }
     </script>
 </body>
-
-
 </html>

@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXX"
+     crossorigin="anonymous"></script>
+
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-9J3H9RR9ZD"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
@@ -19,7 +22,9 @@
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>시급 연봉 변환기 - 이지툴즈</title>
+    <title>2026 시급 연봉 변환기 (최저시급 10,320원) - 이지툴즈</title>
+    <meta name="description" content="2026년 확정 최저시급(10,320원)을 기준으로 내 연봉과 월급을 계산해 보세요. 주휴수당이 포함된 정확한 월급(209시간 기준)과 4대보험 정보를 제공합니다.">
+    
     <link rel="stylesheet" href="../css/style.css?v=2">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
@@ -32,12 +37,19 @@
         
         .radio-group { display: flex; justify-content: center; gap: 20px; margin-bottom: 20px; background: var(--input-bg); padding: 10px; border-radius: 8px; border: 1px solid var(--border); }
         .radio-group label { cursor: pointer; display: flex; align-items: center; gap: 5px; font-weight: 500; font-size: 0.95rem; margin: 0; }
-        .radio-group input[type="radio"] { width: auto; margin: 0; accent-color: var(--primary); }
+        .radio-group input[type="radio"] { width: auto; margin: 0; accent-color: var(--primary); cursor: pointer; }
 
         .result-table { width: 100%; margin-top: 15px; border-collapse: separate; border-spacing: 0 8px; }
         .result-table th { text-align: left; color: var(--text-sub); font-size: 0.9rem; width: 60px; }
         .result-table td { background: var(--hover-bg); padding: 12px; border-radius: 6px; text-align: right; font-weight: bold; color: var(--text-main); }
         .result-table td.highlight { color: var(--primary); font-size: 1.2rem; }
+        
+        /* 정보 섹션 스타일 강화 */
+        .info-section h3 { margin-top: 30px; color: var(--text-main); border-left: 4px solid var(--primary); padding-left: 10px; }
+        .info-section ul { padding-left: 20px; line-height: 1.8; }
+        .info-section li { margin-bottom: 8px; color: var(--text-sub); }
+        .info-section p { color: var(--text-sub); line-height: 1.7; }
+        .highlight-box { background: var(--hover-bg); padding: 15px; border-radius: 8px; border: 1px dashed var(--border); margin: 20px 0; color: var(--text-main); }
     </style>
     <link rel="manifest" href="../manifest.json">
 
@@ -51,7 +63,7 @@
             <i class="fas fa-moon"></i>
         </button>
 
-        <h1><i class="fas fa-coins"></i> 급여 변환기</h1>
+        <h1><i class="fas fa-coins"></i> 2026 급여 변환기</h1>
         
         <div class="tab-box">
             <div class="tab active" onclick="setMode('hour')">시급 → 연봉</div>
@@ -69,7 +81,7 @@
             </label>
         </div>
         <div class="input-group">
-            <input type="number" id="moneyInput" placeholder="금액 입력">
+            <input type="number" id="moneyInput" placeholder="2026년 최저시급: 10,320">
             <div style="text-align:right; margin-top:5px; color:var(--text-sub); font-weight:bold;" id="unitText">원 (시급)</div>
         </div>
 
@@ -82,23 +94,31 @@
                 <tr><th>월급</th><td id="resMonth" class="highlight">0원</td></tr>
                 <tr><th>연봉</th><td id="resYear">0원</td></tr>
             </table>
-            <p style="text-align:center; font-size:0.8rem; color:var(--text-sub); margin-top:10px;" id="calcStandard">* 주 40시간(209시간) 기준 계산</p>
+            <p style="text-align:center; font-size:0.8rem; color:var(--text-sub); margin-top:10px;" id="calcStandard">* 월 209시간 기준 계산</p>
         </div>
 
         <div class="info-section">
-            <h2>💰 토요일 근무가 급여에 미치는 영향</h2>
-            <p>보통 주 5일 근무자의 월급 기준 시간은 <strong>209시간</strong>입니다. 하지만 토요일에도 근무를 한다면(주 6일제), 계산 기준이 달라져야 합니다.</p>
-            <ul>
-                <li><strong>주 5일 (209시간):</strong> 평일 8시간 × 5일 + 주휴수당 8시간</li>
-                <li><strong>주 6일 (226시간):</strong> 평일 8시간 × 5일 + 토요일 4시간 + 주휴수당 8시간</li>
-            </ul>
-            <p>만약 연봉 계약서에 토요일 근무가 포함되어 있다면, 위 옵션에서 '주 6일'을 선택하고 계산해야 정확한 내 시급을 알 수 있습니다. 같은 연봉이라도 근무 시간이 길면 시급은 낮아지기 때문입니다.</p>
+            <h2>💰 2026년 최저임금 확정! (10,320원)</h2>
+            <p>2026년 최저시급은 전년 대비 2.9% 인상된 <strong>10,320원</strong>으로 최종 확정되었습니다. 이를 기준으로 하루 8시간 주 5일 근무할 경우, 주휴수당을 포함한 최소 월급은 <strong>2,156,880원</strong>입니다.</p>
 
-            <h3>1. 왜 하필 209시간일까? (주휴수당의 마법)</h3>
-            <p>대한민국 근로기준법에는 '주휴수당'이라는 제도가 있습니다. 일주일 동안 규정된 근무일수를 개근하면, 하루치 일당을 유급으로 더 주는 제도입니다. 즉, 일주일에 5일을 일했지만 돈은 6일 치를 받는 셈입니다.</p>
+            <h3>1. '시급 1만 원 시대'의 월급 계산법 (209시간)</h3>
+            <p>월급은 단순히 시급에 근무 시간을 곱하는 것이 아닙니다. 근로기준법상 유급 휴일(주휴일) 수당을 포함해야 하기 때문입니다.</p>
+            <ul>
+                <li><strong>최저 시급:</strong> 10,320원</li>
+                <li><strong>월 소정 근로시간:</strong> 209시간 (주 40시간 근무 + 주 8시간 유급 주휴 × 4.345주)</li>
+                <li><strong>최저 월급:</strong> 10,320원 × 209시간 = <strong>2,156,880원</strong></li>
+            </ul>
+
+            <div class="highlight-box">
+                <strong>💡 2026년 4대 보험 요율 참고</strong><br>
+                2026년 직장 가입자의 건강보험료율은 약 <strong>7.19%</strong>로 예상됩니다. 월급에서 세금과 4대 보험을 공제한 '실수령액'은 대략 월급의 85~90% 수준입니다. 정확한 입금액이 궁금하다면 상단 메뉴의 '실수령액 계산기'를 활용하세요.
+            </div>
+
+            <h3>2. 주 6일 근무자(식당, 서비스직)의 경우</h3>
+            <p>토요일에도 근무하는 주 6일제 근로자의 경우, 통상적으로 월 <strong>226시간</strong>을 기준으로 급여를 산정합니다. (평일 8시간 × 5일 + 토요일 4시간 + 주휴 8시간). 이 경우 최저 월급은 <strong>약 233만 원</strong>(10,320원 × 226시간) 이상이어야 법 위반이 아닙니다.</p>
             
-            <h3>2. 연봉 4,000만 원의 실수령액은?</h3>
-            <p>연봉 금액에 따라 약 8~15% 정도가 세금(4대보험 등)으로 빠져나갑니다. 본 계산기는 세전 금액을 기준으로 변환하며, 실수령액이 궁금하다면 상단 메뉴의 '실수령액 계산기'를 이용해 보세요.</p>
+            <h3>3. 포괄임금제와 최저임금 미달 여부</h3>
+            <p>연봉 계약서에 "모든 수당 포함"이라고 적혀 있는 포괄임금제라도, 실제 근무 시간을 역산했을 때 시급이 10,320원에 미치지 못하면 불법입니다. 이 계산기를 통해 내 연봉이 2026년 최저임금 기준을 충족하는지 꼭 점검해 보세요.</p>
         </div>
 
         <a href="../index.html" class="back-btn">← 메인으로 돌아가기</a>
@@ -120,10 +140,10 @@
             
             if(mode === 'hour') { 
                 unit.innerText = "원 (시급)"; 
-                input.placeholder = "예: 10030"; 
+                input.placeholder = "2026년 최저시급: 10,320"; 
             } else { 
                 unit.innerText = "원 (연봉)"; 
-                input.placeholder = "예: 40000000"; 
+                input.placeholder = "예: 42000000"; 
             }
         }
 
@@ -160,7 +180,7 @@
             document.getElementById('resYear').innerText = Math.floor(year).toLocaleString() + "원";
             
             // 기준 텍스트 업데이트
-            document.getElementById('calcStandard').innerText = `* 월 ${HOURS}시간 기준 계산됨`;
+            document.getElementById('calcStandard').innerText = `* 월 ${HOURS}시간 기준 계산됨 (세전)`;
         }
     </script>
 

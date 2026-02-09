@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXX"
+     crossorigin="anonymous"></script>
+
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-9J3H9RR9ZD"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
@@ -19,16 +22,25 @@
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>더치페이 계산기 (N빵, 정산) - 이지툴즈</title>
-    <link rel="stylesheet" href="../css/style.css">
+    <title>더치페이 계산기 (N빵, 정산 멘트 생성) - 이지툴즈</title>
+    <meta name="description" content="회식, 여행, 모임 후 복잡한 정산을 1초 만에 해결하세요. 1원/10원 단위 절사 기능과 카카오톡 공유용 정산 메시지를 자동으로 만들어 드립니다.">
+    
+    <link rel="stylesheet" href="../css/style.css?v=2">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
         :root { --primary: #3B82F6; }
         .member-list { margin-bottom: 15px; }
-        .copy-area { background: #EFF6FF; padding: 15px; border-radius: 8px; font-family: monospace; font-size: 0.9rem; margin-top: 15px; white-space: pre-wrap; text-align: left; }
+        .copy-area { background: var(--input-bg); padding: 15px; border-radius: 8px; font-family: monospace; font-size: 0.95rem; margin-top: 15px; white-space: pre-wrap; text-align: left; border: 1px solid var(--border); color: var(--text-main); }
         .action-btns { display: flex; gap: 10px; margin-top: 10px; }
-        .sub-btn { flex: 1; padding: 10px; border: 1px solid #ddd; background: white; border-radius: 6px; cursor: pointer; }
-        .sub-btn:hover { background: #f9fafb; }
+        .sub-btn { flex: 1; padding: 10px; border: 1px solid var(--border); background: var(--card-bg); color: var(--text-main); border-radius: 6px; cursor: pointer; transition: 0.2s; }
+        .sub-btn:hover { background: var(--hover-bg); }
+        
+        /* 정보 섹션 스타일 강화 */
+        .info-section h3 { margin-top: 30px; color: var(--text-main); border-left: 4px solid var(--primary); padding-left: 10px; }
+        .info-section ul { padding-left: 20px; line-height: 1.8; }
+        .info-section li { margin-bottom: 8px; color: var(--text-sub); }
+        .info-section p { color: var(--text-sub); line-height: 1.7; }
+        .highlight-box { background: var(--hover-bg); padding: 15px; border-radius: 8px; border: 1px dashed var(--border); margin: 20px 0; color: var(--text-main); }
     </style>
     <link rel="manifest" href="../manifest.json">
 
@@ -53,17 +65,17 @@
             <input type="number" id="peopleCount" value="2">
         </div>
         <div class="input-group" style="display:flex; align-items:center; gap:10px;">
-            <input type="checkbox" id="cut10" checked style="width:auto;">
-            <label for="cut10" style="margin:0; font-weight:normal;">1원/10원 단위 버림 (나머지는 한 명이 부담)</label>
+            <input type="checkbox" id="cut10" checked style="width:20px; height:20px; accent-color:var(--primary);">
+            <label for="cut10" style="margin:0; font-weight:normal; cursor:pointer;">100원 단위로 끊기 (잔돈 버림)</label>
         </div>
 
         <button class="calc-btn" onclick="calcDutch()">계산하기</button>
 
         <div class="result-box" id="result" style="display:none;">
-            <div style="font-size:1.1rem; margin-bottom:10px;">1인당 부담금</div>
+            <div style="font-size:1.1rem; margin-bottom:10px; color:var(--text-sub);">1인당 부담금</div>
             <div style="font-size:2.5rem; font-weight:800; color:var(--primary); margin-bottom:15px;" id="perPerson">0원</div>
             
-            <div id="remainderText" style="color:#666; font-size:0.9rem; margin-bottom:15px;"></div>
+            <div id="remainderText" style="color:var(--text-sub); font-size:0.9rem; margin-bottom:15px;"></div>
 
             <div class="copy-area" id="resultText">결과 텍스트</div>
             
@@ -74,22 +86,32 @@
         </div>
 
         <div class="info-section">
-            <h2>기분 상하지 않는 '똑똑한 더치페이'의 기술</h2>
-            <p>회식, 데이트, 여행 후 정산할 때 1원 단위까지 나누느라 눈치 보신 적 있나요? '더치페이(Dutch Pay)'는 원래 '각자 자기가 먹은 만큼 낸다'는 뜻이지만, 한국에서는 총액을 인원수로 나누는 'N빵' 문화가 일반적입니다. 깔끔한 정산은 인간관계를 유지하는 비결이기도 합니다.</p>
+            <h2>💸 기분 상하지 않는 '똑똑한 정산'의 기술</h2>
+            <p>회식, 여행, 데이트 후 즐겁게 헤어지고 나서 정산 때문에 얼굴 붉히는 일이 종종 있습니다. '더치페이(Dutch Pay)'는 원래 '각자 자기가 먹은 만큼 낸다'는 뜻이지만, 한국에서는 총액을 인원수로 나누는 'N빵' 문화가 일반적입니다. 센스 있는 총무가 되는 정산 꿀팁을 소개합니다.</p>
 
-            <h3>1. 1원, 10원 단위는 어떻게 할까?</h3>
-            <p>45,500원을 3명이 나누면 15,166.666...원이 나옵니다. 이때 166원을 보내달라고 하기도 애매하고, 받기도 귀찮습니다. 센스 있는 총무라면 <strong>'단위 절사'</strong> 기능을 활용하세요.</p>
+            <h3>1. 1원, 10원 단위는 어떻게 할까? (단위 절사)</h3>
+            <p>예를 들어 45,500원을 3명이 나누면 15,166.666...원이 나옵니다. 이때 친구에게 "15,166원 보내줘"라고 하기는 참 애매합니다.</p>
             <ul>
-                <li><strong>100원 단위 끊기:</strong> 15,100원씩 걷고, 남는 자투리 금액(200원)은 총무가 내거나 쿨하게 쏘는 것이 국룰입니다.</li>
-                <li><strong>카카오톡 정산하기:</strong> 요즘은 카카오페이 '정산하기' 기능을 쓰면 자동으로 1원 단위까지 맞춰주거나 사다리 타기로 몰아주기를 할 수 있어 편리합니다.</li>
+                <li><strong>100원/1000원 단위 끊기:</strong> 15,100원씩 걷고, 남는 자투리 금액(수백 원)은 총무가 부담하거나 가위바위보로 정하는 것이 국룰입니다.</li>
+                <li><strong>이지툴즈 계산기 활용:</strong> 위 옵션에서 '100원 단위로 끊기'를 체크하면, 깔끔하게 떨어지는 금액과 남는 잔돈을 자동으로 계산해 줍니다.</li>
             </ul>
 
-            <h3>2. 윗사람과의 더치페이 에티켓</h3>
-            <p>직장 상사나 선배와 밥을 먹을 때는 어떻게 해야 할까요? 과거에는 윗사람이 다 내는 게 미덕이었지만, 요즘은 '김영란법'과 MZ세대의 개인주의 성향으로 더치페이가 자연스러워졌습니다.</p>
+            <div class="highlight-box">
+                <strong>💡 정산 메시지 잘 보내는 법</strong><br>
+                단순히 계좌만 띡 보내지 말고, 구체적인 내역을 함께 보내세요.<br>
+                <em>"어제 삼겹살 55,000원 + 커피 12,000원 = 총 67,000원 나왔어! 3명이니까 22,300원씩 보내주면 돼~ (카카오뱅크 3333-xx-xxxx)"</em><br>
+                이지툴즈는 이런 정중하고 명확한 메시지를 자동으로 생성해 줍니다.
+            </div>
+
+            <h3>2. 직장 상사/선배와의 식사 에티켓</h3>
+            <p>과거에는 윗사람이 밥값을 다 내는 것이 미덕이었지만, 요즘은 '김영란법(청탁금지법)'과 개인주의 문화로 더치페이가 자연스러워졌습니다.</p>
             <ul>
-                <li><strong>1차는 선배가, 2차는 후배가:</strong> 금액이 큰 밥값은 선배가 내고, 커피나 가벼운 디저트는 후배들이 나눠 내는 방식이 가장 모양새가 좋습니다.</li>
-                <li><strong>잘 먹었습니다 인사:</strong> 얻어먹었을 때는 다음날 "어제 잘 먹었습니다"라고 한 번 더 인사하는 것이 사회생활의 꿀팁입니다.</li>
+                <li><strong>1차는 선배, 2차는 후배:</strong> 금액이 큰 식사는 선배가 사고, 가벼운 커피나 디저트는 후배들이 나누어 내는 방식이 가장 센스 있습니다.</li>
+                <li><strong>잘 먹었습니다 인사:</strong> 얻어먹었을 때는 다음날 아침이나 메신저로 "어제 정말 잘 먹었습니다"라고 한 번 더 감사 인사를 전하는 것이 사회생활 만렙의 비결입니다.</li>
             </ul>
+
+            <h3>3. 데이트 통장 vs 더치페이</h3>
+            <p>최근 2030 커플 사이에서는 데이트 비용 갈등을 줄이기 위해 '데이트 통장'이나 '공동 계좌'를 사용하는 비중이 늘고 있습니다. 매월 일정 금액(예: 각 20만 원)을 입금하고 그 카드로만 결제하면, 매번 "누가 낼래?" 눈치 볼 필요가 없어 합리적입니다.</p>
         </div>
 
         <a href="../index.html" class="back-btn">← 메인으로 돌아가기</a>
@@ -101,31 +123,31 @@
             const people = parseInt(document.getElementById('peopleCount').value);
             const cut = document.getElementById('cut10').checked;
 
-            if(!total || !people) { alert("금액과 인원수를 입력해주세요."); return; }
+            if(!total || !people) { showToast("금액과 인원수를 입력해주세요."); return; }
 
             let per = Math.floor(total / people);
             let remainder = total - (per * people);
 
             // 단위 절사 (100원 단위로 끊기 - 좀 더 깔끔하게)
             if(cut) {
-                per = Math.floor(per / 100) * 100; // 100원 단위 버림
+                // 예: 15166 -> 15100 (100원 미만 버림)
+                per = Math.floor(per / 100) * 100; 
                 remainder = total - (per * people);
             }
 
             document.getElementById('result').style.display = 'block';
             document.getElementById('perPerson').innerText = per.toLocaleString() + "원";
             
-            let text = `[정산 내역]\n총 금액: ${total.toLocaleString()}원\n인원: ${people}명\n----------------\n1인당: ${per.toLocaleString()}원 보내주세요!`;
+            let text = `[정산 내역 💸]\n총 금액: ${total.toLocaleString()}원\n인원: ${people}명\n----------------\n1인당: ${per.toLocaleString()}원`;
             
             if(remainder > 0) {
                 document.getElementById('remainderText').innerText = `※ 자투리 금액 ${remainder}원은 총무가 부담하거나 1명이 더 냅니다.`;
-                text += `\n(자투리 ${remainder}원은 제가 낼게요 😉)`;
+                text += `\n(자투리 ${remainder}원은 뺄게요 😉)`;
             } else {
                 document.getElementById('remainderText').innerText = "깔끔하게 딱 떨어집니다!";
             }
             
-            // 계좌번호 추가 팁
-            text += `\n\n[계좌번호]\n은행 000-0000-0000 예금주`;
+            text += `\n\n[보내실 곳]\n은행 000-0000-0000 예금주`;
             
             document.getElementById('resultText').innerText = text;
         }
@@ -133,11 +155,13 @@
         function copyResult() {
             const text = document.getElementById('resultText').innerText;
             navigator.clipboard.writeText(text).then(() => {
-                alert("정산 메시지가 복사되었습니다!\n카톡방에 붙여넣기 하세요.");
+                showToast("복사 완료! 카톡방에 붙여넣기 하세요.");
+            }).catch(() => {
+                showToast("복사 실패. 텍스트를 직접 긁어서 복사해주세요.");
             });
         }
         function shareKakao() {
-            alert("카카오톡 공유 기능은 도메인 등록 후 사용 가능합니다.\n'복사하기'를 이용해주세요!");
+            showToast("카카오톡 공유는 도메인 정식 등록 후 사용 가능합니다.");
         }
     </script>
 
@@ -156,34 +180,25 @@
     </script>
 
     <script>
-        // 기존 alert() 함수를 가로채서 토스트로 보여주는 마법의 코드
+        // 토스트 알림 기능
         window.alert = function(message) {
             showToast(message);
         };
 
         function showToast(message) {
-            // 컨테이너가 없으면 생성
             let container = document.getElementById('toast-container');
             if (!container) {
                 container = document.createElement('div');
                 container.id = 'toast-container';
                 document.body.appendChild(container);
             }
-
-            // 메시지 박스 생성
             const toast = document.createElement('div');
             toast.className = 'toast-message';
-            // 아이콘과 메시지 결합
             toast.innerHTML = `<i class="fas fa-check-circle"></i> <span>${message}</span>`;
-
             container.appendChild(toast);
-
-            // 애니메이션 시작
             requestAnimationFrame(() => {
                 setTimeout(() => { toast.classList.add('show'); }, 10);
             });
-
-            // 2.5초 후 제거
             setTimeout(() => {
                 toast.classList.remove('show');
                 setTimeout(() => { 
@@ -193,6 +208,4 @@
         }
     </script>
 </body>
-
-
 </html>

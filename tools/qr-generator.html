@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXX"
+     crossorigin="anonymous"></script>
+
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-9J3H9RR9ZD"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
@@ -19,14 +22,23 @@
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>QR코드 생성기 (무료 제작) - 이지툴즈</title>
-    <link rel="stylesheet" href="../css/style.css">
+    <title>무료 QR코드 생성기 (이미지 저장, 만료 없음) - 이지툴즈</title>
+    <meta name="description" content="URL, 텍스트, 와이파이 정보를 담은 고화질 QR코드를 무료로 생성하세요. 기간 만료 없는 영구적인 정적(Static) QR코드를 즉시 제작하여 이미지로 다운로드할 수 있습니다.">
+    
+    <link rel="stylesheet" href="../css/style.css?v=2">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <style>
         :root { --primary: #2563EB; }
-        #qrcode { margin: 30px auto; padding: 15px; border: 1px solid #ddd; display: inline-block; background: white; border-radius: 8px; }
-        #qrcode img { margin: 0 auto; } /* 중앙 정렬 */
+        #qrcode { margin: 30px auto; padding: 20px; border: 1px solid var(--border); display: inline-block; background: white; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        #qrcode img { margin: 0 auto; display: block; } 
+        
+        /* 정보 섹션 스타일 강화 */
+        .info-section h3 { margin-top: 30px; color: var(--text-main); border-left: 4px solid var(--primary); padding-left: 10px; }
+        .info-section ul { padding-left: 20px; line-height: 1.8; }
+        .info-section li { margin-bottom: 8px; color: var(--text-sub); }
+        .info-section p { color: var(--text-sub); line-height: 1.7; }
+        .highlight-box { background: var(--hover-bg); padding: 15px; border-radius: 8px; border: 1px dashed var(--border); margin: 20px 0; color: var(--text-main); }
     </style>
     <link rel="manifest" href="../manifest.json">
 
@@ -43,35 +55,46 @@
         <h1><i class="fas fa-qrcode"></i> QR코드 생성기</h1>
         
         <div class="input-group">
-            <label>변환할 주소(URL) 또는 텍스트</label>
-            <input type="text" id="qrInput" placeholder="예: https://naver.com" onkeyup="if(window.event.keyCode==13){generateQR()}">
+            <label>변환할 주소(URL) 또는 텍스트 입력</label>
+            <input type="text" id="qrInput" placeholder="예: https://k-tools.kr" onkeyup="if(window.event.keyCode==13){generateQR()}">
         </div>
 
         <button class="calc-btn" onclick="generateQR()">QR코드 만들기</button>
 
         <div class="result-box" id="result" style="display:none; text-align:center;">
             <div id="qrcode"></div>
-            <p style="color:#666; font-size:0.9rem;">이미지를 길게 누르거나 우클릭하여 저장하세요.</p>
+            <p style="color:var(--text-sub); font-size:0.9rem; margin-top:10px;">
+                <i class="fas fa-download"></i> 이미지를 길게 누르거나 우클릭하여 저장하세요.
+            </p>
         </div>
 
         <div class="info-section">
-            <h2>QR코드(Quick Response Code)의 모든 것</h2>
-            <p>QR코드는 '빠른 응답(Quick Response)'이라는 뜻을 가진 2차원 바코드입니다. 기존 바코드가 숫자만 저장할 수 있었던 것에 비해, QR코드는 숫자, 영문, 한글, 인터넷 주소(URL), 사진, 지도 정보 등 방대한 양의 데이터를 담을 수 있습니다. 스마트폰 카메라만 갖다 대면 즉시 정보를 읽을 수 있어 마케팅, 결제, 본인 인증 등 다양한 분야에서 활용됩니다.</p>
+            <h2>📱 QR코드(Quick Response Code) 완벽 가이드</h2>
+            <p>QR코드는 '빠른 응답(Quick Response)'이라는 뜻을 가진 2차원 매트릭스 바코드입니다. 기존의 1차원 바코드가 숫자 정보만 저장할 수 있었던 것에 비해, QR코드는 숫자, 영문, 한글, 인터넷 주소(URL), 사진, 지도 정보 등 방대한 양의 데이터를 담을 수 있어 전 세계적으로 널리 사용되고 있습니다.</p>
 
-            <h3>1. QR코드는 안전한가요? (큐싱 주의)</h3>
-            <p>QR코드 자체는 안전한 기술이지만, 이를 악용한 <strong>'큐싱(Qshing, QR코드+피싱)'</strong> 범죄가 늘고 있습니다. 출처가 불분명한 QR코드를 스캔했을 때 악성 앱이 설치되거나 가짜 은행 사이트로 연결될 수 있습니다.</p>
+            <h3>1. 이지툴즈 QR코드의 장점 (정적 vs 동적)</h3>
+            <p>QR코드는 크게 두 가지 방식으로 나뉩니다. 이지툴즈가 제공하는 방식은 <strong>'정적(Static) QR코드'</strong>입니다.</p>
             <ul>
-                <li>공공장소에 덧붙여진 스티커 QR코드는 주의하세요.</li>
-                <li>스캔 후 연결된 사이트 주소가 정상적인지 꼭 확인하세요.</li>
-                <li>단축 URL(bit.ly 등)로 된 경우 더욱 조심해야 합니다.</li>
+                <li><strong>영구적 사용:</strong> 생성된 QR코드는 기간 만료 없이 평생 사용할 수 있습니다.</li>
+                <li><strong>서버 저장 안 함:</strong> 입력한 정보가 서버에 저장되지 않고, 사용자의 브라우저에서 즉시 생성되므로 개인정보 유출 걱정이 없습니다.</li>
+                <li><strong>고화질 출력:</strong> 인쇄용으로 사용해도 깨지지 않는 선명한 품질을 제공합니다.</li>
             </ul>
 
-            <h3>2. 나만의 QR코드 활용법</h3>
-            <p>이 도구를 사용하면 누구나 무료로 QR코드를 만들 수 있습니다. 이렇게 활용해보세요!</p>
+            <div class="highlight-box">
+                <strong>💡 QR코드 활용 꿀팁</strong><br>
+                <ul>
+                    <li><strong>와이파이 자동 연결:</strong> `WIFI:S:내와이파이이름;T:WPA;P:비밀번호;;` 형식으로 텍스트를 입력해 보세요. 스캔 한 번으로 비밀번호 입력 없이 와이파이에 접속할 수 있습니다.</li>
+                    <li><strong>명함/포트폴리오:</strong> 종이 명함 뒷면에 내 링크드인(LinkedIn)이나 포트폴리오 사이트 주소를 QR로 넣어보세요.</li>
+                    <li><strong>계좌이체:</strong> 카카오뱅크나 토스 등에서 제공하는 내 계좌 링크를 QR로 변환하면 간편하게 송금받을 수 있습니다.</li>
+                </ul>
+            </div>
+
+            <h3>2. 큐싱(Qshing) 보안 주의사항</h3>
+            <p>QR코드 사용이 늘어나면서 이를 악용한 <strong>'큐싱(QR코드+피싱)'</strong> 범죄도 증가하고 있습니다. 안전한 사용을 위해 다음 수칙을 지켜주세요.</p>
             <ul>
-                <li><strong>와이파이 자동 연결:</strong> 와이파이 비번을 QR로 만들어 벽에 붙여두면 손님들이 편하게 접속할 수 있습니다. (형식: `WIFI:S:내와이파이이름;T:WPA;P:비밀번호;;`)</li>
-                <li><strong>명함/연락처:</strong> 종이 명함에 내 SNS나 포트폴리오 링크를 담은 QR을 인쇄하세요.</li>
-                <li><strong>청첩장/초대장:</strong> 모바일 청첩장 링크나 예식장 약도를 QR로 넣어보세요.</li>
+                <li>공공장소나 길거리에 붙은 출처 불명의 QR코드는 함부로 스캔하지 마세요.</li>
+                <li>스캔 후 연결된 사이트 주소(URL)가 공식 홈페이지가 맞는지 반드시 확인하세요.</li>
+                <li>단축 URL(bit.ly 등)로 된 경우, 목적지를 알 수 없으므로 더욱 주의가 필요합니다.</li>
             </ul>
         </div>
 
@@ -83,7 +106,7 @@
 
         function generateQR() {
             const text = document.getElementById('qrInput').value;
-            if(!text) { alert("내용을 입력해주세요."); return; }
+            if(!text) { showToast("내용을 입력해주세요."); return; }
 
             const container = document.getElementById('qrcode');
             container.innerHTML = ""; // 초기화
@@ -117,34 +140,25 @@
     </script>
 
     <script>
-        // 기존 alert() 함수를 가로채서 토스트로 보여주는 마법의 코드
+        // 토스트 알림 기능
         window.alert = function(message) {
             showToast(message);
         };
 
         function showToast(message) {
-            // 컨테이너가 없으면 생성
             let container = document.getElementById('toast-container');
             if (!container) {
                 container = document.createElement('div');
                 container.id = 'toast-container';
                 document.body.appendChild(container);
             }
-
-            // 메시지 박스 생성
             const toast = document.createElement('div');
             toast.className = 'toast-message';
-            // 아이콘과 메시지 결합
             toast.innerHTML = `<i class="fas fa-check-circle"></i> <span>${message}</span>`;
-
             container.appendChild(toast);
-
-            // 애니메이션 시작
             requestAnimationFrame(() => {
                 setTimeout(() => { toast.classList.add('show'); }, 10);
             });
-
-            // 2.5초 후 제거
             setTimeout(() => {
                 toast.classList.remove('show');
                 setTimeout(() => { 
@@ -154,6 +168,4 @@
         }
     </script>
 </body>
-
-
 </html>
