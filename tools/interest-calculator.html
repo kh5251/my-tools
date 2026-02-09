@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-9J3H9RR9ZD"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-9J3H9RR9ZD');
+    </script>
+
+    <script>
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'dark') {
+            document.documentElement.setAttribute('data-theme', 'dark');
+        }
+    </script>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>예적금 이자 계산기 (단리/복리) - 이지툴즈</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root { --primary: #059669; }
+        .radio-group { display: flex; gap: 15px; margin-bottom: 15px; }
+        .radio-group label { font-weight: normal; cursor: pointer; display: flex; align-items: center; gap: 5px; }
+        .result-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #eee; }
+        .result-row:last-child { border: none; }
+        .total-amount { font-size: 1.8rem; font-weight: 800; color: var(--primary); text-align: right; margin-top: 10px; }
+    </style>
+    <link rel="manifest" href="../manifest.json">
+
+    <link rel="icon" type="image/png" sizes="32x32" href="../images/icon-192.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="../images/icon-192.png">
+
+</head>
+<body class="tool-page">
+    <div class="container">
+    <button class="tool-theme-btn" onclick="toggleThemeTool()">
+        <i class="fas fa-moon"></i>
+    </button>
+
+        <h1><i class="fas fa-chart-line"></i> 이자 계산기</h1>
+        
+        <div class="input-group">
+            <label>예치 금액 (원)</label>
+            <input type="number" id="principal" placeholder="예: 10000000">
+        </div>
+        <div class="input-group">
+            <label>기간 (개월)</label>
+            <input type="number" id="months" placeholder="예: 12" value="12">
+        </div>
+        <div class="input-group">
+            <label>연 이자율 (%)</label>
+            <input type="number" id="rate" placeholder="예: 3.5">
+        </div>
+
+        <div class="input-group">
+            <label>이자 방식</label>
+            <div class="radio-group">
+                <label><input type="radio" name="type" value="simple" checked> 단리 (원금에만 이자)</label>
+                <label><input type="radio" name="type" value="compound"> 월복리 (이자에도 이자)</label>
+            </div>
+        </div>
+        <div class="input-group">
+            <label>과세 구분</label>
+            <select id="tax">
+                <option value="15.4">일반 과세 (15.4%)</option>
+                <option value="9.5">세금 우대 (9.5%)</option>
+                <option value="1.4">농특세만 (1.4%)</option>
+                <option value="0">비과세 (0%)</option>
+            </select>
+        </div>
+
+        <button class="calc-btn" onclick="calcInterest()">만기 금액 확인</button>
+
+        <div class="result-box" id="result" style="display:none;">
+            <div class="result-row">
+                <span>원금</span>
+                <span id="resPrincipal">0원</span>
+            </div>
+            <div class="result-row">
+                <span>세전 이자</span>
+                <span id="resInterest" style="color:#059669;">+0원</span>
+            </div>
+            <div class="result-row">
+                <span>이자 소득세</span>
+                <span id="resTax" style="color:#DC2626;">-0원</span>
+            </div>
+            <div style="margin-top:20px; text-align:right;">세후 만기 수령액</div>
+            <div class="total-amount" id="resTotal">0원</div>
+        </div>
+
+        <div class="info-section">
+            <h2>돈이 돈을 버는 마법, 단리와 복리의 차이</h2>
+            <p>"복리의 마법"이라는 말을 들어보셨나요? 아인슈타인은 복리를 '세계 8대 불가사의'라고 불렀습니다. 예금이나 적금을 가입할 때 0.1%의 금리 차이보다 더 중요한 것이 바로 이자 계산 방식입니다.</p>
+            <ul>
+                <li><strong>단리 (Simple Interest):</strong> 오직 '원금'에만 이자가 붙습니다. 100만 원을 10% 이자로 맡기면 매년 10만 원씩만 붙습니다. (10년 뒤 이자 총액 100만 원)</li>
+                <li><strong>복리 (Compound Interest):</strong> '원금 + 이자'에 다시 이자가 붙습니다. 이자가 눈덩이처럼 불어납니다. (10년 뒤 이자 총액 약 159만 원)</li>
+            </ul>
+            <p>기간이 길어질수록 복리의 효과는 기하급수적으로 커집니다. 따라서 3년 이상의 장기 투자를 한다면 반드시 '월복리' 상품을 찾는 것이 유리합니다.</p>
+
+            <h3>1. 내 이자에서 세금을 왜 떼가나요? (15.4%의 비밀)</h3>
+            <p>은행 금리가 4%라고 해서 4%를 다 주는 게 아닙니다. 국가는 이자 소득에 대해 세금을 징수합니다.</p>
+            <ul>
+                <li><strong>일반 과세 (15.4%):</strong> 소득세 14% + 지방소득세 1.4%. 대부분의 예적금이 여기에 해당합니다. 이자가 10만 원이라면 15,400원을 떼고 84,600원만 줍니다.</li>
+                <li><strong>세금 우대 (1.4% ~ 9.5%):</strong> 신협, 새마을금고, 수협 등 상호금융권에서 1인당 3천만 원 한도로 제공하는 혜택입니다. (농특세 1.4%만 부과)</li>
+                <li><strong>비과세 (0%):</strong> ISA 계좌나 청년도약계좌 등 정부 정책 상품은 세금을 전혀 떼지 않습니다. '비과세'가 곧 최고의 수익률입니다.</li>
+            </ul>
+
+            <div class="highlight-box">
+                <strong>💡 72의 법칙 (Rule of 72)</strong><br>
+                내 자산이 2배가 되는 데 걸리는 시간을 암산하는 공식입니다.<br>
+                <strong>72 ÷ 연 수익률(%) = 걸리는 시간(년)</strong><br>
+                예를 들어 연 6% 복리 상품에 가입했다면, 72 ÷ 6 = 12년 뒤에 원금이 2배가 됩니다. 반면 금리가 2%라면 무려 36년이 걸립니다.
+            </div>
+        </div>
+
+        <a href="../index.html" class="back-btn">← 메인으로 돌아가기</a>
+    </div>
+
+    <script>
+        function calcInterest() {
+            const p = parseFloat(document.getElementById('principal').value);
+            const m = parseFloat(document.getElementById('months').value);
+            const r = parseFloat(document.getElementById('rate').value) / 100;
+            const taxRate = parseFloat(document.getElementById('tax').value) / 100;
+            const type = document.querySelector('input[name="type"]:checked').value;
+
+            if(!p || !m || !r) { alert("정보를 모두 입력해주세요."); return; }
+
+            let interest = 0;
+
+            if(type === 'simple') {
+                // 단리: 원금 * 연이율 * (개월수/12)
+                interest = p * r * (m / 12);
+            } else {
+                // 월복리: 원금 * (1 + 연이율/12)^개월수 - 원금
+                interest = p * Math.pow(1 + r/12, m) - p;
+            }
+
+            const tax = interest * taxRate;
+            const finalInterest = interest - tax;
+            const total = p + finalInterest;
+
+            document.getElementById('result').style.display = 'block';
+            document.getElementById('resPrincipal').innerText = Math.round(p).toLocaleString() + "원";
+            document.getElementById('resInterest').innerText = "+" + Math.round(interest).toLocaleString() + "원";
+            document.getElementById('resTax').innerText = "-" + Math.round(tax).toLocaleString() + "원";
+            document.getElementById('resTotal').innerText = Math.round(total).toLocaleString() + "원";
+        }
+    </script>
+
+    <script>
+        // 다크모드 토글 기능
+        function toggleThemeTool() {
+            const current = document.documentElement.getAttribute('data-theme');
+            if (current === 'dark') {
+                document.documentElement.setAttribute('data-theme', 'light');
+                localStorage.setItem('theme', 'light');
+            } else {
+                document.documentElement.setAttribute('data-theme', 'dark');
+                localStorage.setItem('theme', 'dark');
+            }
+        }
+    </script>
+
+    <script>
+        // 기존 alert() 함수를 가로채서 토스트로 보여주는 마법의 코드
+        window.alert = function(message) {
+            showToast(message);
+        };
+
+        function showToast(message) {
+            // 컨테이너가 없으면 생성
+            let container = document.getElementById('toast-container');
+            if (!container) {
+                container = document.createElement('div');
+                container.id = 'toast-container';
+                document.body.appendChild(container);
+            }
+
+            // 메시지 박스 생성
+            const toast = document.createElement('div');
+            toast.className = 'toast-message';
+            // 아이콘과 메시지 결합
+            toast.innerHTML = `<i class="fas fa-check-circle"></i> <span>${message}</span>`;
+
+            container.appendChild(toast);
+
+            // 애니메이션 시작
+            requestAnimationFrame(() => {
+                setTimeout(() => { toast.classList.add('show'); }, 10);
+            });
+
+            // 2.5초 후 제거
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => { 
+                    if(container.contains(toast)) container.removeChild(toast);
+                }, 300);
+            }, 2500);
+        }
+    </script>
+</body>
+
+
+</html>

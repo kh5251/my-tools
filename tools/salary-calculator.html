@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-9J3H9RR9ZD"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-9J3H9RR9ZD');
+    </script>
+
+    <script>
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'dark') {
+            document.documentElement.setAttribute('data-theme', 'dark');
+        }
+    </script>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>월급 실수령액 계산기 (2025 최신) - 이지툴즈</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root { --primary: #10B981; }
+        .tax-table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        .tax-table th { text-align: left; color: #666; padding: 8px; border-bottom: 1px solid #eee; font-size: 0.9rem; }
+        .tax-table td { text-align: right; font-weight: bold; padding: 8px; border-bottom: 1px solid #eee; }
+        .final-row td { color: var(--primary); font-size: 1.2rem; border-bottom: none; padding-top: 15px; }
+        .deduction { color: #EF4444; font-size: 0.9rem; }
+    </style>
+    <link rel="manifest" href="../manifest.json">
+
+    <link rel="icon" type="image/png" sizes="32x32" href="../images/icon-192.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="../images/icon-192.png">
+
+</head>
+<body class="tool-page">
+    <div class="container">
+    <button class="tool-theme-btn" onclick="toggleThemeTool()">
+        <i class="fas fa-moon"></i>
+    </button>
+
+        <h1><i class="fas fa-money-bill-wave"></i> 실수령액 계산기</h1>
+        
+        <div class="input-group">
+            <label>연봉 (원)</label>
+            <input type="number" id="salary" placeholder="예: 40000000">
+        </div>
+        <div class="input-group">
+            <label>비과세액 (식대 등 월)</label>
+            <input type="number" id="taxFree" placeholder="예: 200000" value="200000">
+        </div>
+        <div class="input-group">
+            <label>부양가족 수 (본인포함)</label>
+            <input type="number" id="family" value="1">
+        </div>
+
+        <button class="calc-btn" onclick="calcSalary()">내 월급 확인하기</button>
+
+        <div class="result-box" id="result" style="display:none;">
+            <div style="text-align:center; margin-bottom:10px; font-weight:bold; color:#333;">예상 월 실수령액</div>
+            <div style="text-align:center; font-size:2.5rem; font-weight:800; color:var(--primary); margin-bottom:20px;" id="finalPay">0원</div>
+            
+            <table class="tax-table">
+                <tr><th>국민연금 (4.5%)</th><td class="deduction" id="d_pension">-</td></tr>
+                <tr><th>건강보험 (3.545%)</th><td class="deduction" id="d_health">-</td></tr>
+                <tr><th>장기요양 (12.95%)</th><td class="deduction" id="d_care">-</td></tr>
+                <tr><th>고용보험 (0.9%)</th><td class="deduction" id="d_employ">-</td></tr>
+                <tr><th>소득세 (간이세액)</th><td class="deduction" id="d_income">-</td></tr>
+                <tr><th>지방소득세 (10%)</th><td class="deduction" id="d_local">-</td></tr>
+                <tr style="background:#f3f4f6;"><th>공제액 합계</th><td style="color:#DC2626;" id="d_total">-</td></tr>
+            </table>
+        </div>
+
+        <div class="info-section">
+            <h2>연봉 1억, 실제로는 얼마 받을까?</h2>
+            <p>많은 직장인들의 꿈인 '연봉 1억'. 하지만 통장에 실제로 찍히는 돈은 1억 나누기 12인 833만 원이 아닙니다. 대한민국 직장인이라면 피할 수 없는 <strong>4대 보험</strong>과 <strong>소득세</strong> 때문입니다. 2025년 기준으로 연봉 1억 원의 월 실수령액은 약 <strong>650~660만 원</strong> 정도입니다. 매달 약 170만 원 이상이 세금으로 빠져나가는 셈입니다.</p>
+
+            <h3>1. 내 월급 도둑, 4대 보험 완전 정복</h3>
+            <p>월급 명세서를 보면 '공제 내역'에 알 수 없는 항목들이 가득합니다. 이것들이 내 월급을 갉아먹는 주범들입니다.</p>
+            <ul>
+                <li><strong>국민연금 (4.5%):</strong> 의무 가입입니다. 낸 돈은 나중에 은퇴 후 연금으로 돌려받습니다. (상한액 존재)</li>
+                <li><strong>건강보험 (약 3.545%):</strong> 병원비를 지원받기 위한 보험료입니다.</li>
+                <li><strong>장기요양보험 (건보료의 약 12.95%):</strong> 노인성 질환 등에 대비하는 보험입니다. 건강보험료에 연동되어 계산됩니다.</li>
+                <li><strong>고용보험 (0.9%):</strong> 실직했을 때 실업급여를 받기 위해 냅니다.</li>
+            </ul>
+
+            <h3>2. 소득세는 사람마다 다르다?</h3>
+            <p>4대 보험은 요율이 고정되어 있어 누구에게나 똑같이 적용되지만(비율상), <strong>소득세</strong>는 다릅니다. 부양가족 수와 20세 이하 자녀 수에 따라 '근로소득 간이세액표'를 기준으로 차등 부과됩니다. 혼자 사는 1인 가구는 세금을 가장 많이 내고, 자녀가 많은 다자녀 가구는 세금이 확 줄어듭니다. 이 계산기는 부양가족 수를 입력받아 더 정확한 세금을 계산해 드립니다.</p>
+        </div>
+
+        <a href="../index.html" class="back-btn">← 메인으로 돌아가기</a>
+    </div>
+
+    <script>
+        function calcSalary() {
+            const yearPay = parseFloat(document.getElementById('salary').value);
+            const nonTax = parseFloat(document.getElementById('taxFree').value) || 0;
+            
+            if(!yearPay) { alert("연봉을 입력해주세요."); return; }
+
+            const monthPay = yearPay / 12;
+            const taxable = monthPay - nonTax; // 과세 대상 금액
+
+            // 1. 4대보험 계산 (2024~2025 기준 근사치)
+            let pension = taxable * 0.045; // 국민연금 (상한액 265,500원 정도지만 단순화)
+            if(pension > 265500) pension = 265500; // 대략적 상한선
+
+            const health = taxable * 0.03545; // 건강보험
+            const care = health * 0.1295; // 장기요양
+            const employ = taxable * 0.009; // 고용보험
+
+            // 2. 소득세 (약식 계산: 과세표준 구간별 누진공제 대신 간이세액표 근사치 적용)
+            // 실제로는 매우 복잡하나 여기서는 통상적인 비율로 추산 (약 3~5% ~ 고액연봉 20%+)
+            let incomeTax = 0;
+            if(taxable < 1000000) incomeTax = 0;
+            else if(taxable < 3000000) incomeTax = taxable * 0.02;
+            else if(taxable < 5000000) incomeTax = taxable * 0.05;
+            else if(taxable < 8000000) incomeTax = taxable * 0.12;
+            else incomeTax = taxable * 0.20;
+            
+            // 부양가족 공제 (단순화: 1명당 15,000원 세금 감면 효과라 가정)
+            const family = parseFloat(document.getElementById('family').value) || 1;
+            if(family > 1) incomeTax -= (family - 1) * 15000;
+            if(incomeTax < 0) incomeTax = 0;
+
+            const localTax = incomeTax * 0.1; // 지방세
+
+            const totalDed = pension + health + care + employ + incomeTax + localTax;
+            const final = monthPay - totalDed;
+
+            // 결과 표시
+            document.getElementById('result').style.display = 'block';
+            
+            const fmt = n => Math.floor(n).toLocaleString() + "원";
+            
+            document.getElementById('finalPay').innerText = fmt(final);
+            document.getElementById('d_pension').innerText = fmt(pension);
+            document.getElementById('d_health').innerText = fmt(health);
+            document.getElementById('d_care').innerText = fmt(care);
+            document.getElementById('d_employ').innerText = fmt(employ);
+            document.getElementById('d_income').innerText = fmt(incomeTax);
+            document.getElementById('d_local').innerText = fmt(localTax);
+            document.getElementById('d_total').innerText = fmt(totalDed);
+        }
+    </script>
+
+    <script>
+        // 다크모드 토글 기능
+        function toggleThemeTool() {
+            const current = document.documentElement.getAttribute('data-theme');
+            if (current === 'dark') {
+                document.documentElement.setAttribute('data-theme', 'light');
+                localStorage.setItem('theme', 'light');
+            } else {
+                document.documentElement.setAttribute('data-theme', 'dark');
+                localStorage.setItem('theme', 'dark');
+            }
+        }
+    </script>
+
+    <script>
+        // 기존 alert() 함수를 가로채서 토스트로 보여주는 마법의 코드
+        window.alert = function(message) {
+            showToast(message);
+        };
+
+        function showToast(message) {
+            // 컨테이너가 없으면 생성
+            let container = document.getElementById('toast-container');
+            if (!container) {
+                container = document.createElement('div');
+                container.id = 'toast-container';
+                document.body.appendChild(container);
+            }
+
+            // 메시지 박스 생성
+            const toast = document.createElement('div');
+            toast.className = 'toast-message';
+            // 아이콘과 메시지 결합
+            toast.innerHTML = `<i class="fas fa-check-circle"></i> <span>${message}</span>`;
+
+            container.appendChild(toast);
+
+            // 애니메이션 시작
+            requestAnimationFrame(() => {
+                setTimeout(() => { toast.classList.add('show'); }, 10);
+            });
+
+            // 2.5초 후 제거
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => { 
+                    if(container.contains(toast)) container.removeChild(toast);
+                }, 300);
+            }, 2500);
+        }
+    </script>
+</body>
+
+
+</html>

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>페이지를 찾을 수 없습니다 - 이지툴즈</title>
+    <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css?v=2">
+    <link rel="icon" type="image/png" sizes="32x32" href="/images/icon-192.png">
+    <style>
+        body {
+            display: flex; align-items: center; justify-content: center;
+            text-align: center; flex-direction: column; min-height: 100vh;
+            margin: 0; background-color: var(--bg); color: var(--text-main);
+        }
+        .error-icon { font-size: 6rem; margin-bottom: 20px; animation: bounce 2s infinite; }
+        h1 { font-size: 2rem; margin: 0 0 10px 0; color: var(--primary); }
+        p { color: var(--text-sub); margin: 0 0 30px 0; font-size: 1.1rem; line-height: 1.6; }
+        .home-btn {
+            background-color: var(--primary); color: white; padding: 15px 30px;
+            border-radius: 50px; text-decoration: none; font-weight: bold;
+            box-shadow: 0 4px 15px rgba(79, 70, 229, 0.4); transition: transform 0.2s;
+        }
+        .home-btn:hover { transform: scale(1.05); }
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {transform: translateY(0);}
+            40% {transform: translateY(-20px);}
+            60% {transform: translateY(-10px);}
+        }
+    </style>
+</head>
+<body>
+    <div class="error-icon">🤔</div>
+    <h1>페이지를 찾을 수 없어요</h1>
+    <p>주소가 잘못되었거나 삭제된 페이지입니다.<br>모든 도구가 있는 메인으로 모실게요!</p>
+    <a href="/" class="home-btn">🏠 메인으로 돌아가기</a>
+</body>
+</html>

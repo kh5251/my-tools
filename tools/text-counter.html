@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-9J3H9RR9ZD"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-9J3H9RR9ZD');
+    </script>
+
+    <script>
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'dark') {
+            document.documentElement.setAttribute('data-theme', 'dark');
+        }
+    </script>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>글자수 세기 (자소서, 이력서) - 이지툴즈</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root { --primary: #4338CA; }
+        textarea { height: 300px; resize: vertical; line-height: 1.6; }
+        .counter-box { display: flex; gap: 10px; margin-top: 10px; background: #EEF2FF; padding: 15px; border-radius: 8px; justify-content: space-around; font-weight: bold; color: #333; }
+        .count-item { text-align: center; }
+        .count-val { font-size: 1.5rem; color: var(--primary); display: block; }
+        .count-label { font-size: 0.8rem; color: #666; }
+    </style>
+    <link rel="manifest" href="../manifest.json">
+
+    <link rel="icon" type="image/png" sizes="32x32" href="../images/icon-192.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="../images/icon-192.png">
+
+</head>
+<body class="tool-page">
+    <div class="container">
+    <button class="tool-theme-btn" onclick="toggleThemeTool()">
+        <i class="fas fa-moon"></i>
+    </button>
+
+        <h1><i class="fas fa-pen-nib"></i> 글자수 세기</h1>
+        
+        <textarea id="textInput" placeholder="여기에 내용을 입력하거나 붙여넣기 하세요." oninput="countText()"></textarea>
+        
+        <div class="counter-box">
+            <div class="count-item">
+                <span class="count-val" id="totalChars">0</span>
+                <span class="count-label">공백 포함</span>
+            </div>
+            <div class="count-item">
+                <span class="count-val" id="noSpaceChars">0</span>
+                <span class="count-label">공백 제외</span>
+            </div>
+            <div class="count-item">
+                <span class="count-val" id="bytes">0</span>
+                <span class="count-label">바이트 (Byte)</span>
+            </div>
+        </div>
+        
+        <div style="margin-top:10px; text-align:right;">
+            <button class="btn" style="background:#EF4444; color:white; padding:8px 15px; border-radius:4px; font-size:0.9rem;" onclick="clearText()">지우기</button>
+        </div>
+
+        <div class="info-section">
+            <h2>자기소개서 글자 수, 왜 사이트마다 다를까?</h2>
+            <p>취업 준비생이나 블로거라면 글자 수 세기는 필수입니다. 그런데 네이버 글자 수 세기와 사람인, 잡코리아의 결과가 미세하게 다를 때가 있습니다. 그 이유는 <strong>줄바꿈(엔터)을 몇 글자로 치느냐</strong>의 기준이 다르기 때문입니다.</p>
+            <ul>
+                <li><strong>공백 포함:</strong> 띄어쓰기, 줄바꿈 등 눈에 보이지 않는 공백까지 모두 글자로 칩니다. 대부분의 자소서 기준입니다.</li>
+                <li><strong>공백 제외:</strong> 순수하게 글자(자음, 모음, 알파벳 등)만 셉니다. 논문이나 리포트 분량 체크 시 유용합니다.</li>
+                <li><strong>줄바꿈 계산:</strong> 윈도우에서는 줄바꿈을 `\r\n` (2바이트/2글자)으로 처리하기도 하고, 웹에서는 `\n` (1바이트/1글자)으로 처리하기도 해서 차이가 발생합니다.</li>
+            </ul>
+
+            <h3>1. 한글은 2바이트? 3바이트?</h3>
+            <p>전산상에서 영문/숫자는 무조건 <strong>1바이트</strong>입니다. 하지만 한글은 표기 방식(인코딩)에 따라 용량이 달라집니다.</p>
+            <ul>
+                <li><strong>EUC-KR (구형):</strong> 한글 1자 = <strong>2바이트</strong> (네이버, 사람인 기준)</li>
+                <li><strong>UTF-8 (표준):</strong> 한글 1자 = <strong>3바이트</strong> (구글, 대부분의 웹사이트)</li>
+            </ul>
+            <p>기업 채용 사이트마다 기준이 다르므로, 2,000바이트 제한이 있다면 안전하게 900~950자 정도로 맞추는 것이 좋습니다.</p>
+
+            <div class="highlight-box">
+                <strong>💡 자소서 분량 조절 꿀팁</strong><br>
+                글자 수가 넘칠 때 가장 먼저 줄여야 할 것은 <strong>'부사'</strong>와 <strong>'접속사'</strong>입니다. '매우', '정말', '그리고', '그래서' 같은 단어만 빼도 문장이 훨씬 간결하고 힘 있게 바뀝니다. 또한 '~하는 것', '~할 수 있다' 같은 번역투 말투를 '~함', '~하다'로 고치면 글자 수를 획기적으로 줄일 수 있습니다.
+            </div>
+        </div>
+
+        <a href="../index.html" class="back-btn">← 메인으로 돌아가기</a>
+    </div>
+
+    <script>
+        function countText() {
+            const text = document.getElementById('textInput').value;
+            
+            // 공백 포함
+            document.getElementById('totalChars').innerText = text.length;
+
+            // 공백 제외 (띄어쓰기, 탭, 줄바꿈 제거)
+            const noSpace = text.replace(/\s/g, '');
+            document.getElementById('noSpaceChars').innerText = noSpace.length;
+
+            // 바이트 계산 (한글 2byte, 영문 1byte 기준 - 일반적인 자소서 사이트 기준)
+            // 참고: UTF-8에서는 한글 3byte지만, 국내 자소서 폼은 보통 2byte 취급이 많음.
+            // 여기서는 'UTF-8 기준 3byte' 대신 'EUC-KR 기준 2byte' 시뮬레이션으로 계산 (더 보편적)
+            let byte = 0;
+            for(let i=0; i<text.length; i++) {
+                if(escape(text.charAt(i)).length > 4) { // 한글 등 다국어
+                    byte += 2;
+                } else {
+                    byte += 1;
+                }
+            }
+            // 줄바꿈 보정 (CRLF = 2byte)
+            const lineBreaks = (text.match(/\n/g) || []).length;
+            // 웹 textarea는 \n 하나지만, 실제 윈도우 파일 저장은 \r\n 이므로 +1씩 더해줌
+            byte += lineBreaks;
+
+            document.getElementById('bytes').innerText = byte;
+        }
+
+        function clearText() {
+            document.getElementById('textInput').value = "";
+            countText();
+            document.getElementById('textInput').focus();
+        }
+    </script>
+
+    <script>
+        // 다크모드 토글 기능
+        function toggleThemeTool() {
+            const current = document.documentElement.getAttribute('data-theme');
+            if (current === 'dark') {
+                document.documentElement.setAttribute('data-theme', 'light');
+                localStorage.setItem('theme', 'light');
+            } else {
+                document.documentElement.setAttribute('data-theme', 'dark');
+                localStorage.setItem('theme', 'dark');
+            }
+        }
+    </script>
+
+    <script>
+        // 기존 alert() 함수를 가로채서 토스트로 보여주는 마법의 코드
+        window.alert = function(message) {
+            showToast(message);
+        };
+
+        function showToast(message) {
+            // 컨테이너가 없으면 생성
+            let container = document.getElementById('toast-container');
+            if (!container) {
+                container = document.createElement('div');
+                container.id = 'toast-container';
+                document.body.appendChild(container);
+            }
+
+            // 메시지 박스 생성
+            const toast = document.createElement('div');
+            toast.className = 'toast-message';
+            // 아이콘과 메시지 결합
+            toast.innerHTML = `<i class="fas fa-check-circle"></i> <span>${message}</span>`;
+
+            container.appendChild(toast);
+
+            // 애니메이션 시작
+            requestAnimationFrame(() => {
+                setTimeout(() => { toast.classList.add('show'); }, 10);
+            });
+
+            // 2.5초 후 제거
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => { 
+                    if(container.contains(toast)) container.removeChild(toast);
+                }, 300);
+            }, 2500);
+        }
+    </script>
+</body>
+
+
+</html>

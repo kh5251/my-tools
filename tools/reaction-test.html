@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-9J3H9RR9ZD"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-9J3H9RR9ZD');
+    </script>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>반응속도 테스트 (게임) - 이지툴즈</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root { --primary: #EF4444; }
+        
+        /* 이 페이지 전용: 공통 스타일 강제 덮어쓰기 (!important) */
+        body.tool-page { 
+            padding: 0 !important; 
+            display: block !important; /* 플렉스 해제 */
+            height: auto !important;
+            overflow-y: auto !important; /* 스크롤 허용 */
+            background-color: #111827 !important; /* 전체 배경도 어둡게 */
+        }
+        
+        /* 게임 화면 영역 (화면의 75% 차지) */
+        #screen {
+            width: 100%;
+            height: 75vh; 
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            user-select: none;
+            cursor: pointer;
+            text-align: center;
+            padding: 20px;
+            box-sizing: border-box;
+            transition: background 0.2s;
+            position: relative;
+        }
+
+        .waiting { background-color: #3B82F6; color: white; } /* 파랑: 대기 */
+        .ready { background-color: #EF4444; color: white; }   /* 빨강: 준비 */
+        .now { background-color: #22C55E; color: white; }     /* 초록: 클릭 */
+
+        #screen h1 { color: white; font-size: 3.5rem; margin-bottom: 10px; text-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+        #screen p { font-size: 1.3rem; opacity: 0.9; color: white; margin: 0; }
+
+        /* 결과 리스트 및 버튼 */
+        .result-overlay { position: absolute; bottom: 30px; left: 0; width: 100%; text-align: center; pointer-events: none; }
+        .result-list { color: rgba(255,255,255,0.9); font-weight: bold; font-size: 1.1rem; text-shadow: 0 1px 2px rgba(0,0,0,0.3); }
+        
+        .back-btn { 
+            position: absolute; top: 20px; left: 20px; 
+            color: white; text-decoration: none; font-weight: bold; 
+            background: rgba(0,0,0,0.3); padding: 10px 20px; border-radius: 50px; 
+            z-index: 20; 
+        }
+        .back-btn:hover { background: rgba(0,0,0,0.5); }
+
+        /* ▼▼▼ [수정됨] 하단 설명글 영역 (항상 다크모드) ▼▼▼ */
+        .info-wrapper {
+            padding: 40px 20px;
+            background-color: #111827; /* 무조건 어두운 배경 */
+            color: #E5E7EB;           /* 무조건 밝은 글씨 */
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        /* 설명글 내부 스타일 강제 적용 */
+        .info-section {
+            margin-top: 0; 
+            border-top: none;
+            color: #D1D5DB !important; /* 본문 회색 */
+        }
+        .info-section h2 { 
+            color: #EF4444 !important; /* 제목 빨간색 */
+            border-bottom: 1px solid #374151 !important; /* 테두리 어둡게 */
+        }
+        .info-section h3 { 
+            color: #F3F4F6 !important; /* 소제목 흰색 */
+        }
+        .scroll-hint { font-size: 0.9rem; margin-top: 10px; opacity: 0.8; animation: bounce 1.5s infinite; color: white; }
+        @keyframes bounce { 0%, 100% {transform: translateY(0);} 50% {transform: translateY(5px);} }
+    </style>
+    <link rel="manifest" href="../manifest.json">
+
+    <link rel="icon" type="image/png" sizes="32x32" href="../images/icon-192.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="../images/icon-192.png">
+
+</head>
+<body class="tool-page">
+    
+    <div id="screen" class="waiting">
+        <a href="../index.html" class="back-btn" onclick="event.stopPropagation()">← 나가기</a>
+        
+        <div id="msgBox">
+            <h1>클릭해서 시작!</h1>
+            <p>초록색으로 바뀌면 클릭하세요.</p>
+        </div>
+
+        <div class="result-overlay">
+            <div class="result-list" id="resultList"></div>
+            <div class="scroll-hint">▼ 아래로 내려서 꿀팁 보기 ▼</div>
+        </div>
+    </div>
+
+    <div class="info-wrapper">
+        <div class="info-section">
+            <h2>내 반사신경은 상위 몇 %일까?</h2>
+            <p>FPS 게임을 즐기거나 스포츠 활동을 할 때 가장 중요한 능력 중 하나가 바로 <strong>반응속도(Reaction Time)</strong>입니다. 반응속도란 시각, 청각 등의 자극을 감지하고 뇌에서 판단을 내린 뒤 근육이 움직이기까지 걸리는 시간을 말합니다. 이지툴즈 반응속도 테스트는 시각적 자극(색상 변화)에 얼마나 빠르게 반응하는지를 밀리초(ms) 단위로 측정해 줍니다.</p>
+
+            <h3>1. 인간의 한계는 어디까지일까?</h3>
+            <p>일반적인 성인의 평균 시각 반응속도는 약 <strong>200ms ~ 250ms</strong> (0.2~0.25초) 정도입니다.</p>
+            <ul>
+                <li><strong>프로게이머/운동선수:</strong> 130ms ~ 150ms (엄청난 훈련의 결과)</li>
+                <li><strong>일반인 상위권:</strong> 180ms ~ 200ms</li>
+                <li><strong>평균:</strong> 215ms</li>
+                <li><strong>음주/피로 상태:</strong> 300ms ~ 500ms 이상 (면허 취소 수준의 위험)</li>
+            </ul>
+            <p>고양이나 뱀 같은 동물들은 인간보다 훨씬 빠른 반응속도를 가지고 있습니다. 만약 당신이 150ms 대를 기록했다면, 타고난 반사신경의 소유자일 가능성이 높습니다!</p>
+
+            <h3>2. 반응속도를 빠르게 만드는 법</h3>
+            <p>반응속도는 타고난 유전적 요인이 크지만, 후천적인 노력으로도 어느 정도 단축할 수 있습니다.</p>
+            <ul>
+                <li><strong>충분한 수면:</strong> 뇌의 인지 처리 속도는 수면 부족 시 급격히 떨어집니다.</li>
+                <li><strong>카페인 섭취:</strong> 적정량의 커피나 에너지 드링크는 일시적으로 각성 효과를 주어 반응 속도를 높여줍니다.</li>
+                <li><strong>반복 훈련:</strong> 이 테스트를 매일 반복하거나, 빠른 화면 전환이 있는 게임을 즐기면 신경 회로가 강화됩니다.</li>
+            </ul>
+            <p>지금 바로 친구들에게 링크를 공유하고, 누가 더 빠른지 내기를 해보세요!</p>
+        </div>
+    </div>
+
+    <script>
+        const screen = document.getElementById('screen');
+        const msgBox = document.getElementById('msgBox');
+        const resultList = document.getElementById('resultList');
+        
+        let startTime, endTime, timeoutId;
+        let records = [];
+
+        screen.addEventListener('click', function(e) {
+            // 뒤로가기 버튼 클릭 시 이벤트 전파 방지
+            if(e.target.classList.contains('back-btn')) return;
+
+            if (screen.classList.contains('waiting')) {
+                screen.classList.replace('waiting', 'ready');
+                msgBox.querySelector('h1').textContent = "기다리세요...";
+                msgBox.querySelector('p').textContent = "아직 누르지 마세요!";
+                
+                const randomTime = Math.floor(Math.random() * 2000) + 1500;
+                timeoutId = setTimeout(function() {
+                    startTime = new Date();
+                    screen.classList.replace('ready', 'now');
+                    msgBox.querySelector('h1').textContent = "클릭!!!";
+                    msgBox.querySelector('p').textContent = "지금 누르세요!";
+                }, randomTime);
+
+            } else if (screen.classList.contains('ready')) {
+                clearTimeout(timeoutId);
+                screen.classList.replace('ready', 'waiting');
+                msgBox.querySelector('h1').textContent = "너무 빨라요! 🚫";
+                msgBox.querySelector('p').textContent = "성급하셨군요. 다시 클릭하세요.";
+
+            } else if (screen.classList.contains('now')) {
+                endTime = new Date();
+                const diff = endTime - startTime;
+                records.push(diff);
+                const avg = Math.floor(records.reduce((a,c) => a+c) / records.length);
+                
+                screen.classList.replace('now', 'waiting');
+                msgBox.querySelector('h1').textContent = `${diff}ms`;
+                msgBox.querySelector('p').textContent = `평균: ${avg}ms / 다시 하려면 클릭`;
+                
+                resultList.innerHTML += `<div>${records.length}차: ${diff}ms</div>`;
+            }
+        });
+    </script>
+
+    <script>
+        // 기존 alert() 함수를 가로채서 토스트로 보여주는 마법의 코드
+        window.alert = function(message) {
+            showToast(message);
+        };
+
+        function showToast(message) {
+            // 컨테이너가 없으면 생성
+            let container = document.getElementById('toast-container');
+            if (!container) {
+                container = document.createElement('div');
+                container.id = 'toast-container';
+                document.body.appendChild(container);
+            }
+
+            // 메시지 박스 생성
+            const toast = document.createElement('div');
+            toast.className = 'toast-message';
+            // 아이콘과 메시지 결합
+            toast.innerHTML = `<i class="fas fa-check-circle"></i> <span>${message}</span>`;
+
+            container.appendChild(toast);
+
+            // 애니메이션 시작
+            requestAnimationFrame(() => {
+                setTimeout(() => { toast.classList.add('show'); }, 10);
+            });
+
+            // 2.5초 후 제거
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => { 
+                    if(container.contains(toast)) container.removeChild(toast);
+                }, 300);
+            }, 2500);
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-9J3H9RR9ZD"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-9J3H9RR9ZD');
+    </script>
+
+    <script>
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'dark') {
+            document.documentElement.setAttribute('data-theme', 'dark');
+        }
+    </script>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>평수 계산기 (제곱미터 변환) - 이지툴즈</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root { --primary: #8B5CF6; }
+        .converter-box { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; background: #F5F3FF; padding: 20px; border-radius: 12px; }
+        .input-wrap { flex: 1; }
+        .icon-arrow { font-size: 1.5rem; color: #aaa; }
+        .result-text { font-size: 0.9rem; color: #666; margin-top: 5px; text-align: right; }
+        
+        @media (max-width: 600px) { .converter-box { flex-direction: column; } .icon-arrow { transform: rotate(90deg); } }
+    </style>
+    <link rel="manifest" href="../manifest.json">
+
+    <link rel="icon" type="image/png" sizes="32x32" href="../images/icon-192.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="../images/icon-192.png">
+
+</head>
+<body class="tool-page">
+    <div class="container">
+    <button class="tool-theme-btn" onclick="toggleThemeTool()">
+        <i class="fas fa-moon"></i>
+    </button>
+
+        <h1><i class="fas fa-house"></i> 평수 변환기</h1>
+        <p style="text-align:center; margin-bottom:30px; color:#666;">입력하는 즉시 자동으로 변환됩니다.</p>
+
+        <div class="converter-box">
+            <div class="input-wrap">
+                <label>평수 (평)</label>
+                <input type="number" id="pyeong" placeholder="예: 32" oninput="convert('p')">
+            </div>
+            <i class="fas fa-arrow-right icon-arrow"></i>
+            <div class="input-wrap">
+                <label>면적 (m²)</label>
+                <input type="number" id="m2_1" readonly placeholder="결과">
+                <div class="result-text" id="res_m2">0 ㎡</div>
+            </div>
+        </div>
+
+        <div class="converter-box">
+            <div class="input-wrap">
+                <label>면적 (m²)</label>
+                <input type="number" id="m2_2" placeholder="예: 84" oninput="convert('m')">
+            </div>
+            <i class="fas fa-arrow-right icon-arrow"></i>
+            <div class="input-wrap">
+                <label>평수 (평)</label>
+                <input type="number" id="pyeong_2" readonly placeholder="결과">
+                <div class="result-text" id="res_p">0 평</div>
+            </div>
+        </div>
+
+        <div class="info-section">
+            <h2>'국민 평수' 84㎡는 왜 34평일까?</h2>
+            <p>부동산 뉴스를 보면 "전용면적 84㎡"라는 말이 자주 나옵니다. 이를 계산해보면 약 25.4평인데, 왜 부동산에서는 <strong>"34평형 아파트"</strong>라고 부를까요? 이 차이를 이해하려면 <strong>전용면적</strong>과 <strong>공급면적</strong>의 개념을 알아야 합니다.</p>
+
+            <h3>1. 전용면적 vs 공급면적 vs 계약면적</h3>
+            <ul>
+                <li><strong>전용면적 (실평수):</strong> 현관 문을 열고 들어갔을 때 실제로 우리가 거실, 방, 화장실 등으로 쓰는 공간입니다. 발코니(베란다)는 서비스 면적이라 여기에 포함되지 않습니다.</li>
+                <li><strong>공급면적 (분양면적):</strong> 전용면적에 '주거 공용면적'(계단, 복도, 엘리베이터 등)을 더한 것입니다. 우리가 흔히 말하는 "몇 평 아파트"는 이 공급면적을 기준으로 합니다.</li>
+                <li><strong>계약면적:</strong> 공급면적에 '기타 공용면적'(주차장, 관리실, 노인정 등)까지 모두 합친 면적입니다.</li>
+            </ul>
+            <p>따라서 전용면적 84㎡(25.4평)에 공용면적 약 8~9평을 더해 33~34평형 아파트가 되는 것입니다.</p>
+
+            <h3>2. 1평은 정확히 얼마일까?</h3>
+            <p>1평은 약 <strong>3.305785㎡</strong>입니다. 가로 1.818m × 세로 1.818m 정사각형의 크기로, 성인 남성 한 명이 대자로 누울 수 있는 정도의 공간이라고 생각하면 쉽습니다. 법정 계량 단위 사용 의무화로 인해 공식적으로는 '제곱미터(㎡)'를 써야 하지만, 여전히 한국 부동산 시장에서는 직관적인 '평' 단위가 통용되고 있습니다.</p>
+            
+            <div class="highlight-box">
+                <strong>💡 암산 꿀팁</strong><br>
+                제곱미터(㎡)로 된 숫자를 평수로 대략 알고 싶다면? <strong>마지막 자리를 떼고 3을 곱하세요.</strong><br>
+                예) 122㎡ → 마지막 2를 떼면 12 → 12 × 3 = 36평 (실제값 36.9평과 비슷)<br>
+                정확하진 않지만 모델하우스에서 감을 잡을 때 아주 유용합니다.
+            </div>
+        </div>
+
+        <a href="../index.html" class="back-btn">← 메인으로 돌아가기</a>
+    </div>
+
+    <script>
+        function convert(type) {
+            const P_VAL = 3.305785;
+            
+            if(type === 'p') {
+                const p = parseFloat(document.getElementById('pyeong').value);
+                if(p) {
+                    const m = p * P_VAL;
+                    document.getElementById('m2_1').value = m.toFixed(2);
+                    document.getElementById('res_m2').innerText = m.toLocaleString() + " ㎡";
+                } else {
+                    document.getElementById('m2_1').value = "";
+                }
+            } else {
+                const m = parseFloat(document.getElementById('m2_2').value);
+                if(m) {
+                    const p = m / P_VAL;
+                    document.getElementById('pyeong_2').value = p.toFixed(2);
+                    document.getElementById('res_p').innerText = p.toFixed(1) + " 평";
+                } else {
+                    document.getElementById('pyeong_2').value = "";
+                }
+            }
+        }
+    </script>
+
+    <script>
+        // 다크모드 토글 기능
+        function toggleThemeTool() {
+            const current = document.documentElement.getAttribute('data-theme');
+            if (current === 'dark') {
+                document.documentElement.setAttribute('data-theme', 'light');
+                localStorage.setItem('theme', 'light');
+            } else {
+                document.documentElement.setAttribute('data-theme', 'dark');
+                localStorage.setItem('theme', 'dark');
+            }
+        }
+    </script>
+
+    <script>
+        // 기존 alert() 함수를 가로채서 토스트로 보여주는 마법의 코드
+        window.alert = function(message) {
+            showToast(message);
+        };
+
+        function showToast(message) {
+            // 컨테이너가 없으면 생성
+            let container = document.getElementById('toast-container');
+            if (!container) {
+                container = document.createElement('div');
+                container.id = 'toast-container';
+                document.body.appendChild(container);
+            }
+
+            // 메시지 박스 생성
+            const toast = document.createElement('div');
+            toast.className = 'toast-message';
+            // 아이콘과 메시지 결합
+            toast.innerHTML = `<i class="fas fa-check-circle"></i> <span>${message}</span>`;
+
+            container.appendChild(toast);
+
+            // 애니메이션 시작
+            requestAnimationFrame(() => {
+                setTimeout(() => { toast.classList.add('show'); }, 10);
+            });
+
+            // 2.5초 후 제거
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => { 
+                    if(container.contains(toast)) container.removeChild(toast);
+                }, 300);
+            }, 2500);
+        }
+    </script>
+</body>
+
+
+</html>

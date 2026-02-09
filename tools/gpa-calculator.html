@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-9J3H9RR9ZD"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-9J3H9RR9ZD');
+    </script>
+
+    <script>
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'dark') {
+            document.documentElement.setAttribute('data-theme', 'dark');
+        }
+    </script>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>학점 계산기 - 이지툴즈</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root { --primary: #EA580C; }
+
+        /* 고유 디자인 */
+        .subject-row { display: flex; gap: 5px; margin-bottom: 8px; }
+        .subject-row select, .subject-row input { padding: 8px; height: 40px; }
+        .subject-row .category { flex: 1.2; }
+        .subject-row input[type="text"] { flex: 2; }
+        .subject-row .credit { flex: 0.8; text-align: center; }
+        .subject-row .grade { flex: 1; }
+
+        .sub-scores { display: flex; gap: 10px; border-top: 1px solid #FDBA74; padding-top: 15px; margin-top: 15px; }
+        .score-box { flex: 1; background: rgba(255,255,255,0.5); padding: 10px; border-radius: 8px; }
+        .score-title { font-size: 0.8rem; color: #666; display: block; margin-bottom: 4px; font-weight: bold; }
+        .score-val { font-size: 1.2rem; font-weight: bold; color: #333; }
+    </style>
+    <link rel="manifest" href="../manifest.json">
+
+    <link rel="icon" type="image/png" sizes="32x32" href="../images/icon-192.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="../images/icon-192.png">
+
+</head>
+<body class="tool-page">
+    <div class="container">
+    <button class="tool-theme-btn" onclick="toggleThemeTool()">
+        <i class="fas fa-moon"></i>
+    </button>
+
+        <h1><i class="fas fa-graduation-cap"></i> 학점 계산기</h1>
+        
+        <div style="display:flex; font-size:0.8rem; color:#666; margin-bottom:5px; font-weight:bold; text-align:center;">
+            <span style="flex:1.2">구분</span><span style="flex:2">과목</span><span style="flex:0.8">학점</span><span style="flex:1">성적</span>
+        </div>
+        <div id="subjectList"></div>
+
+        <div style="display:flex; gap:10px; margin-top:20px;">
+            <button class="btn" style="flex:1; background:#9CA3AF; color:white; border:none; padding:12px; border-radius:8px;" onclick="addRow()">+ 추가</button>
+            <button class="calc-btn" style="flex:1; margin:0;" onclick="calcGPA()">계산하기</button>
+        </div>
+
+        <div class="result-box" id="result" style="display:none; text-align:center; background:#FFEDD5; border:1px solid #FED7AA;">
+            <div style="color:#9A3412; font-weight:bold;">전체 평균 평점</div>
+            <div style="font-size:3rem; font-weight:800; color:#EA580C; line-height:1;">
+                <span id="totalGpa">0.00</span>
+            </div>
+            
+            <div class="sub-scores">
+                <div class="score-box">
+                    <span class="score-title">📘 전공</span>
+                    <div class="score-val" id="majorGpa">-</div>
+                </div>
+                <div class="score-box">
+                    <span class="score-title">📙 교양</span>
+                    <div class="score-val" id="generalGpa">-</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="info-section">
+            <h2>대학생의 성실함의 척도, 학점(GPA) 완전 정복</h2>
+            <p>대학 생활의 성적표이자 성실함을 증명하는 지표인 학점(GPA: Grade Point Average). "학점이 밥 먹여주냐"라는 말도 있지만, 장학금 신청부터 교환학생, 인턴, 그리고 취업까지 학점이 미치는 영향은 여전히 큽니다. 특히 1학년 때 망친 학점은 고학년이 되어 메꾸려면 몇 배의 노력이 필요하기 때문에, 매 학기 자신의 평점을 정확히 계산하고 관리하는 습관이 중요합니다.</p>
+        
+            <h3>1. 4.5 만점 vs 4.3 만점, 내 학교 기준은?</h3>
+            <p>대한민국 대학교의 대부분은 4.5점 만점 체계를 사용하지만, 서울대, 연세대, 이화여대 등 일부 학교는 4.3점 만점을 사용하기도 합니다. 두 체계의 가장 큰 차이는 성적 구간의 세분화입니다.</p>
+            <ul>
+                <li><strong>4.5 만점:</strong> A+(4.5), A0(4.0), B+(3.5)... 단위로 보통 0.5점씩 차이가 납니다.</li>
+                <li><strong>4.3 만점:</strong> A+(4.3), A0(4.0), A-(3.7)... 단위로 마이너스(-) 등급이 있어 0.3점씩 쪼개집니다.</li>
+            </ul>
+            <p>기업에 입사 지원서를 낼 때는 보통 해당 학교의 만점 기준을 선택하여 입력하거나, 100점 만점 환산 점수(백분위)를 요구하기도 합니다. 이 계산기는 가장 보편적인 <strong>4.5 만점 기준</strong>으로 설계되었습니다.</p>
+        
+            <h3>2. 전공 평점(Major GPA)이 더 중요한 이유</h3>
+            <p>전체 평점도 중요하지만, 취업 시장에서는 <strong>'전공 평점'</strong>을 눈여겨보는 경우가 많습니다. 교양 과목으로 전체 학점을 높였더라도, 정작 중요한 전공 과목 성적이 낮다면 직무 전문성을 의심받을 수 있기 때문입니다. 이공계열이나 전문직의 경우 전공 학점이 서류 통과를 좌우하는 핵심 지표가 되기도 합니다. 이지툴즈 학점 계산기는 전체 평점뿐만 아니라, 전공과 교양 학점을 따로 분리하여 계산해 주므로 전략적인 학점 관리가 가능합니다.</p>
+        
+            <div class="highlight-box">
+                <strong>💡 P/F (Pass/Fail) 과목은 어떻게 되나요?</strong><br>
+                채플이나 봉사활동, 일부 교양 과목은 점수가 아닌 P(Pass) 또는 F(Fail)로 성적이 나옵니다. 이때 <strong>Pass를 받으면 '이수 학점'에는 포함되지만, '평점 평균(GPA)' 계산에서는 제외</strong>되는 것이 일반적입니다. 즉, 올 A+를 받고 P 과목이 하나 섞여 있어도 평점은 4.5 만점이 나옵니다. 단, F(Fail)나 NP(Non-Pass)를 받으면 0점으로 처리되어 평점을 깎아먹는 학교도 있으니 학칙을 꼭 확인하세요. (본 계산기에서 P를 선택하면 평점 계산에서 자동 제외됩니다.)
+            </div>
+        
+            <h3>3. 재수강과 학점 포기, 언제 써야 할까?</h3>
+            <p>C+ 이하의 성적을 받았다면 재수강을 고민하게 됩니다. 하지만 무턱대고 재수강을 하는 것이 능사는 아닙니다. 최근 많은 대학이 재수강 시 받을 수 있는 최고 학점을 A0 또는 B+로 제한하고 있습니다.</p>
+            <ul>
+                <li><strong>필수 과목:</strong> 전공 필수의 경우 성적이 나쁘다면 졸업을 위해, 혹은 기초 지식을 위해 재수강하는 것이 좋습니다.</li>
+                <li><strong>선택 과목:</strong> 재수강으로 올릴 수 있는 점수 한계가 있다면, 차라리 새로운 과목을 수강하여 A+를 노리는 것이 전체 평점에 더 유리할 수 있습니다.</li>
+            </ul>
+        </div>
+
+        <a href="../index.html" class="back-btn">← 메인으로 돌아가기</a>
+    </div>
+
+    <script>
+        window.onload = function() { for(let i=0; i<5; i++) addRow(); };
+        function addRow() {
+            const div = document.createElement('div');
+            div.className = 'subject-row';
+            div.innerHTML = `
+                <select class="category"><option value="major">전공</option><option value="general">교양</option><option value="etc">기타</option></select>
+                <input type="text" placeholder="과목명">
+                <input type="number" class="credit" value="3">
+                <select class="grade">
+                    <option value="4.5">A+</option><option value="4.0">A0</option>
+                    <option value="3.5">B+</option><option value="3.0">B0</option>
+                    <option value="2.5">C+</option><option value="2.0">C0</option>
+                    <option value="1.5">D+</option><option value="1.0">D0</option>
+                    <option value="0">F</option><option value="pass">P</option>
+                </select>`;
+            document.getElementById('subjectList').appendChild(div);
+        }
+        function calcGPA() {
+            const cats = document.querySelectorAll('.category');
+            const creds = document.querySelectorAll('.credit');
+            const grds = document.querySelectorAll('.grade');
+            
+            let tS=0, tC=0, mS=0, mC=0, gS=0, gC=0;
+
+            for(let i=0; i<creds.length; i++) {
+                const c = parseFloat(creds[i].value);
+                const gVal = grds[i].value;
+                const cat = cats[i].value;
+
+                if(c > 0 && gVal !== 'pass') {
+                    const g = parseFloat(gVal);
+                    tS += c*g; tC += c;
+                    if(cat === 'major') { mS += c*g; mC += c; }
+                    else if(cat === 'general') { gS += c*g; gC += c; }
+                }
+            }
+            if(tC===0) { alert("입력된 과목이 없습니다."); return; }
+            
+            document.getElementById('result').style.display = 'block';
+            document.getElementById('totalGpa').innerText = (tS/tC).toFixed(2);
+            document.getElementById('majorGpa').innerText = mC ? (mS/mC).toFixed(2) : "-";
+            document.getElementById('generalGpa').innerText = gC ? (gS/gC).toFixed(2) : "-";
+        }
+    </script>
+
+    <script>
+        // 다크모드 토글 기능
+        function toggleThemeTool() {
+            const current = document.documentElement.getAttribute('data-theme');
+            if (current === 'dark') {
+                document.documentElement.setAttribute('data-theme', 'light');
+                localStorage.setItem('theme', 'light');
+            } else {
+                document.documentElement.setAttribute('data-theme', 'dark');
+                localStorage.setItem('theme', 'dark');
+            }
+        }
+    </script>
+
+    <script>
+        // 기존 alert() 함수를 가로채서 토스트로 보여주는 마법의 코드
+        window.alert = function(message) {
+            showToast(message);
+        };
+
+        function showToast(message) {
+            // 컨테이너가 없으면 생성
+            let container = document.getElementById('toast-container');
+            if (!container) {
+                container = document.createElement('div');
+                container.id = 'toast-container';
+                document.body.appendChild(container);
+            }
+
+            // 메시지 박스 생성
+            const toast = document.createElement('div');
+            toast.className = 'toast-message';
+            // 아이콘과 메시지 결합
+            toast.innerHTML = `<i class="fas fa-check-circle"></i> <span>${message}</span>`;
+
+            container.appendChild(toast);
+
+            // 애니메이션 시작
+            requestAnimationFrame(() => {
+                setTimeout(() => { toast.classList.add('show'); }, 10);
+            });
+
+            // 2.5초 후 제거
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => { 
+                    if(container.contains(toast)) container.removeChild(toast);
+                }, 300);
+            }, 2500);
+        }
+    </script>
+</body>
+
+
+</html>

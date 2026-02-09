@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-9J3H9RR9ZD"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-9J3H9RR9ZD');
+    </script>
+
+    <script>
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'dark') {
+            document.documentElement.setAttribute('data-theme', 'dark');
+        }
+    </script>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>로또 시뮬레이터 (가상 추첨) - 이지툴즈</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root { --primary: #F59E0B; }
+        
+        /* 로또 공통 스타일 */
+        .ball { 
+            display: inline-flex; justify-content: center; align-items: center;
+            width: 35px; height: 35px; border-radius: 50%; 
+            font-weight: bold; color: white; font-size: 0.9rem; 
+            margin: 2px; text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+            box-shadow: inset -2px -2px 5px rgba(0,0,0,0.2);
+        }
+        /* 공 색상 */
+        .b-1 { background-color: #FBC400; } /* 1-10 */
+        .b-11 { background-color: #69C8F2; } /* 11-20 */
+        .b-21 { background-color: #FF7272; } /* 21-30 */
+        .b-31 { background-color: #AAAAAA; } /* 31-40 */
+        .b-41 { background-color: #B0D840; } /* 41-45 */
+        
+        /* 섹션별 스타일 */
+        .winning-section {
+            background: #FFFBEB; border: 2px solid #FCD34D; 
+            border-radius: 12px; padding: 20px; margin-bottom: 20px;
+            text-align: center;
+        }
+        .win-balls-wrapper { display: flex; justify-content: center; align-items: center; gap: 5px; flex-wrap: wrap; margin-top: 10px; }
+        .plus-sign { font-size: 1.5rem; color: #aaa; margin: 0 10px; }
+
+        /* 결과 요약표 */
+        .summary-box {
+            display: flex; gap: 10px; margin-bottom: 20px;
+        }
+        .sum-card {
+            flex: 1; background: #fff; border: 1px solid #ddd; 
+            border-radius: 8px; padding: 15px; text-align: center;
+        }
+        .sum-label { font-size: 0.85rem; color: #666; margin-bottom: 5px; }
+        .sum-val { font-size: 1.1rem; font-weight: bold; color: #333; }
+        .profit-plus { color: #DC2626; } /* 이득 */
+        .profit-minus { color: #2563EB; } /* 손해 */
+
+        /* 구매 내역 리스트 */
+        .ticket-list { 
+            max-height: 500px; overflow-y: auto; 
+            border: 1px solid #eee; border-radius: 8px; padding: 10px;
+        }
+        .ticket-row {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 10px; border-bottom: 1px solid #f0f0f0;
+        }
+        .ticket-row:last-child { border-bottom: none; }
+        .rank-badge {
+            padding: 4px 8px; border-radius: 4px; font-size: 0.8rem; font-weight: bold;
+            color: white; background: #9CA3AF; min-width: 50px; text-align: center;
+        }
+        .rank-1 { background: #DC2626; } /* 1등 */
+        .rank-2 { background: #EA580C; }
+        .rank-3 { background: #F59E0B; }
+        .rank-4 { background: #2563EB; }
+        .rank-5 { background: #10B981; }
+        .rank-0 { background: #E5E7EB; color: #999; } /* 꽝 */
+
+        /* 모바일 대응 */
+        @media (max-width: 600px) {
+            .ball { width: 30px; height: 30px; font-size: 0.8rem; }
+            .ticket-row { flex-direction: column; gap: 5px; align-items: flex-start; }
+            .ticket-right { width: 100%; display: flex; justify-content: space-between; align-items: center; }
+        }
+    </style>
+    <link rel="manifest" href="../manifest.json">
+
+    <link rel="icon" type="image/png" sizes="32x32" href="../images/icon-192.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="../images/icon-192.png">
+
+</head>
+<body class="tool-page">
+    <div class="container">
+    <button class="tool-theme-btn" onclick="toggleThemeTool()">
+        <i class="fas fa-moon"></i>
+    </button>
+
+        <h1><i class="fas fa-ticket-alt"></i> 로또 시뮬레이터</h1>
+        
+        <div class="input-group" style="display:flex; gap:10px; align-items:flex-end;">
+            <div style="flex:1;">
+                <label>구매 수량 (1~100장)</label>
+                <input type="number" id="buyCount" value="5" min="1" max="100" placeholder="장수">
+            </div>
+            <button class="calc-btn" style="flex:1; margin:0;" onclick="runSimulation()">구매 및 추첨 🎰</button>
+        </div>
+
+        <div id="simulationResult" style="display:none;">
+            <div class="winning-section">
+                <div style="font-weight:bold; color:#D97706;">이번 회차 당첨 번호</div>
+                <div class="win-balls-wrapper" id="winBalls">
+                    </div>
+            </div>
+
+            <div class="summary-box">
+                <div class="sum-card">
+                    <div class="sum-label">총 구매액</div>
+                    <div class="sum-val" id="totalCost">0원</div>
+                </div>
+                <div class="sum-card">
+                    <div class="sum-label">총 당첨금</div>
+                    <div class="sum-val" id="totalPrize">0원</div>
+                </div>
+                <div class="sum-card">
+                    <div class="sum-label">수익률</div>
+                    <div class="sum-val" id="profitRate">0%</div>
+                </div>
+            </div>
+
+            <h3 style="text-align:left; font-size:1rem; margin-bottom:10px;">📜 구매 내역 상세</h3>
+            <div class="ticket-list" id="ticketList">
+                </div>
+        </div>
+
+        <div class="info-section">
+            <h2>로또 10만 원어치 사면 얼마나 당첨될까?</h2>
+            <p>이 시뮬레이터는 실제 로또 6/45 규칙을 완벽하게 적용하여 결과를 예측해 줍니다. 1등부터 5등까지의 당첨 조건과 평균 당첨금은 다음과 같습니다.</p>
+
+            <h3>1. 등수별 당첨 조건 및 금액 (가상)</h3>
+            <ul>
+                <li><strong>1등 (6개 일치):</strong> 약 20억 원 (확률 1/8,145,060)</li>
+                <li><strong>2등 (5개 + 보너스):</strong> 약 5,000만 원</li>
+                <li><strong>3등 (5개 일치):</strong> 약 150만 원</li>
+                <li><strong>4등 (4개 일치):</strong> 50,000원 (고정)</li>
+                <li><strong>5등 (3개 일치):</strong> 5,000원 (고정)</li>
+            </ul>
+
+            <h3>2. 로또의 냉정한 현실</h3>
+            <p>통계적으로 로또의 기대 수익률은 약 50%입니다. 즉, 10,000원을 사면 평균적으로 5,000원만 돌아온다는 뜻입니다. 이 시뮬레이터를 통해 100장을 사도 5등(5천 원) 몇 개 건지기 힘들다는 '확률의 무서움'을 직접 체험해 보세요. 복권은 투자가 아니라 소액으로 즐기는 오락이어야 합니다.</p>
+        </div>
+
+        <a href="../index.html" class="back-btn">← 메인으로 돌아가기</a>
+    </div>
+
+    <script>
+        // 공 HTML 생성 헬퍼 함수
+        function makeBall(num) {
+            let colorClass = 'b-1';
+            if(num > 40) colorClass = 'b-41';
+            else if(num > 30) colorClass = 'b-31';
+            else if(num > 20) colorClass = 'b-21';
+            else if(num > 10) colorClass = 'b-11';
+            
+            return `<div class="ball ${colorClass}">${num}</div>`;
+        }
+
+        // 1~45 랜덤 숫자 6개 생성 (정렬됨)
+        function generateSet() {
+            const nums = new Set();
+            while(nums.size < 6) {
+                nums.add(Math.floor(Math.random() * 45) + 1);
+            }
+            return Array.from(nums).sort((a,b) => a-b);
+        }
+
+        function runSimulation() {
+            const count = parseInt(document.getElementById('buyCount').value);
+            if(count < 1 || count > 100) { alert("1장에서 100장 사이로 입력해주세요."); return; }
+
+            // 1. 당첨 번호 생성 (6개 + 보너스 1개)
+            const winSet = new Set();
+            while(winSet.size < 7) {
+                winSet.add(Math.floor(Math.random() * 45) + 1);
+            }
+            const winArr = Array.from(winSet);
+            const bonus = winArr.pop(); // 마지막 숫자를 보너스로 씀
+            const mains = winArr.sort((a,b) => a-b); // 나머지 6개 정렬
+
+            // 당첨 번호 화면 표시
+            const winDiv = document.getElementById('winBalls');
+            winDiv.innerHTML = mains.map(n => makeBall(n)).join('') + 
+                               `<span class="plus-sign">+</span>` + 
+                               makeBall(bonus) + `<div style="font-size:0.8rem; color:#666; margin-top:5px; width:100%;">보너스</div>`;
+
+            // 2. 구매 및 결과 확인
+            const listDiv = document.getElementById('ticketList');
+            listDiv.innerHTML = "";
+            
+            let totalPrize = 0;
+            let purchaseCost = count * 1000;
+
+            for(let i=0; i<count; i++) {
+                const myNums = generateSet();
+                
+                // 일치 개수 확인
+                let matchCnt = 0;
+                myNums.forEach(n => { if(mains.includes(n)) matchCnt++; });
+                
+                let isBonus = myNums.includes(bonus);
+                let rank = 0; // 0은 꽝
+                let prize = 0;
+
+                if(matchCnt === 6) { rank = 1; prize = 2000000000; }
+                else if(matchCnt === 5 && isBonus) { rank = 2; prize = 50000000; }
+                else if(matchCnt === 5) { rank = 3; prize = 1500000; }
+                else if(matchCnt === 4) { rank = 4; prize = 50000; }
+                else if(matchCnt === 3) { rank = 5; prize = 5000; }
+
+                totalPrize += prize;
+
+                // 리스트에 추가
+                const row = document.createElement('div');
+                row.className = 'ticket-row';
+                
+                // 번호 렌더링 (맞춘 번호 테두리 강조 효과 등 줄 수 있지만 여기선 단순 표시)
+                let ballHtml = myNums.map(n => {
+                    // 당첨번호나 보너스번호와 일치하면 그대로, 아니면 투명도 조절
+                    let isHit = mains.includes(n) || (rank === 2 && n === bonus);
+                    let style = isHit ? "" : "opacity:0.3; transform:scale(0.9);";
+                    // 꽝이면 그냥 다 흐리게 하되, 번호는 보이게
+                    if(rank === 0) style = "opacity:0.6; background-color:#ccc; box-shadow:none;"; 
+                    
+                    // 공 생성 (일치 여부 상관없이 색상은 유지하되 스타일 적용)
+                    // 복잡도를 줄이기 위해 기본 공 생성 후 style 추가
+                    return `<div class="ball" style="${style} background-color:${getBallColor(n)}">${n}</div>`;
+                }).join('');
+
+                let rankBadge = rank > 0 ? `<span class="rank-badge rank-${rank}">${rank}등</span>` : `<span class="rank-badge rank-0">꽝</span>`;
+                let prizeText = rank > 0 ? `<span style="font-size:0.9rem; font-weight:bold; color:#333;">${prize.toLocaleString()}원</span>` : "";
+
+                row.innerHTML = `
+                    <div style="display:flex;">${ballHtml}</div>
+                    <div class="ticket-right" style="display:flex; gap:10px; align-items:center;">
+                        ${prizeText} ${rankBadge}
+                    </div>
+                `;
+                listDiv.appendChild(row);
+            }
+
+            // 3. 최종 정산
+            document.getElementById('totalCost').innerText = purchaseCost.toLocaleString() + "원";
+            document.getElementById('totalPrize').innerText = totalPrize.toLocaleString() + "원";
+            
+            const profit = totalPrize - purchaseCost;
+            const rate = ((profit / purchaseCost) * 100).toFixed(1);
+            
+            const rateObj = document.getElementById('profitRate');
+            rateObj.innerText = (profit > 0 ? "+" : "") + rate + "%";
+            rateObj.className = "sum-val " + (profit >= 0 ? "profit-plus" : "profit-minus");
+
+            document.getElementById('simulationResult').style.display = 'block';
+        }
+
+        // 공 색상 코드 반환 함수 (내부용)
+        function getBallColor(n) {
+            if(n<=10) return "#FBC400";
+            if(n<=20) return "#69C8F2";
+            if(n<=30) return "#FF7272";
+            if(n<=40) return "#AAAAAA";
+            return "#B0D840";
+        }
+    </script>
+
+    <script>
+        // 다크모드 토글 기능
+        function toggleThemeTool() {
+            const current = document.documentElement.getAttribute('data-theme');
+            if (current === 'dark') {
+                document.documentElement.setAttribute('data-theme', 'light');
+                localStorage.setItem('theme', 'light');
+            } else {
+                document.documentElement.setAttribute('data-theme', 'dark');
+                localStorage.setItem('theme', 'dark');
+            }
+        }
+    </script>
+
+    <script>
+        // 기존 alert() 함수를 가로채서 토스트로 보여주는 마법의 코드
+        window.alert = function(message) {
+            showToast(message);
+        };
+
+        function showToast(message) {
+            // 컨테이너가 없으면 생성
+            let container = document.getElementById('toast-container');
+            if (!container) {
+                container = document.createElement('div');
+                container.id = 'toast-container';
+                document.body.appendChild(container);
+            }
+
+            // 메시지 박스 생성
+            const toast = document.createElement('div');
+            toast.className = 'toast-message';
+            // 아이콘과 메시지 결합
+            toast.innerHTML = `<i class="fas fa-check-circle"></i> <span>${message}</span>`;
+
+            container.appendChild(toast);
+
+            // 애니메이션 시작
+            requestAnimationFrame(() => {
+                setTimeout(() => { toast.classList.add('show'); }, 10);
+            });
+
+            // 2.5초 후 제거
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => { 
+                    if(container.contains(toast)) container.removeChild(toast);
+                }, 300);
+            }, 2500);
+        }
+    </script>
+</body>
+
+
+</html>

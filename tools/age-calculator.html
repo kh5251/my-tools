@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-9J3H9RR9ZD"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-9J3H9RR9ZD');
+    </script>
+
+    <script>
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'dark') {
+            document.documentElement.setAttribute('data-theme', 'dark');
+        }
+    </script>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>만 나이 계산기 (띠, 별자리, 인생조언) - 이지툴즈</title>
+    <link rel="stylesheet" href="../css/style.css?v=2">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <script src="https://cdn.jsdelivr.net/npm/korean-lunar-calendar/dist/korean-lunar-calendar.min.js"></script>
+
+    <style>
+        :root { --primary: #EC4899; }
+        .result-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 15px; }
+        .res-card { background: var(--hover-bg); padding: 15px; border-radius: 12px; text-align: center; border: 1px solid var(--border); }
+        .res-card h3 { font-size: 0.9rem; color: #9D174D; margin: 0 0 5px 0; }
+        .res-val { font-size: 1.4rem; font-weight: 800; color: var(--text-main); }
+        .main-age { font-size: 4rem; font-weight: 800; color: var(--primary); margin: 10px 0; line-height: 1; }
+        
+        /* 인생 조언 말풍선 스타일 */
+        .advice-box {
+            background: #FFFBEB;
+            border: 2px solid #FCD34D;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+            position: relative;
+            text-align: left;
+        }
+        .advice-box::before {
+            content: "💡 동년배의 조언";
+            position: absolute;
+            top: -12px;
+            left: 20px;
+            background: #FCD34D;
+            color: #78350F;
+            font-size: 0.8rem;
+            padding: 2px 10px;
+            border-radius: 10px;
+            font-weight: bold;
+        }
+        .advice-text { color: #555; line-height: 1.6; font-size: 0.95rem; }
+        .advice-highlight { font-weight: bold; color: #D97706; }
+
+        /* ▼▼▼ [추가] 양력/음력 선택 스타일 ▼▼▼ */
+        .cal-type-group { display: flex; align-items: center; justify-content: center; gap: 15px; margin-bottom: 10px; background: var(--input-bg); padding: 10px; border-radius: 8px; border: 1px solid var(--border); }
+        .cal-type-group label { margin: 0; cursor: pointer; display: flex; align-items: center; gap: 5px; font-weight: 500; font-size: 0.95rem; }
+        .cal-type-group input[type="radio"], .cal-type-group input[type="checkbox"] { width: auto; margin: 0; accent-color: var(--primary); }
+        .yoon-check { font-size: 0.85rem; color: var(--text-sub); border-left: 1px solid var(--border); padding-left: 15px; }
+        .converted-date { font-size: 0.9rem; color: var(--primary); margin-top: 5px; font-weight: bold; }
+    </style>
+    <link rel="manifest" href="../manifest.json">
+
+    <link rel="icon" type="image/png" sizes="32x32" href="../images/icon-192.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="../images/icon-192.png">
+
+</head>
+<body class="tool-page">
+    <div class="container">
+        <button class="tool-theme-btn" onclick="toggleThemeTool()">
+            <i class="fas fa-moon"></i>
+        </button>
+
+        <h1><i class="fas fa-birthday-cake"></i> 만 나이 계산기</h1>
+        
+        <div class="input-group">
+            <div class="cal-type-group">
+                <label><input type="radio" name="calType" value="solar" checked onclick="toggleYoon(false)"> 양력</label>
+                <label><input type="radio" name="calType" value="lunar" onclick="toggleYoon(true)"> 음력</label>
+                <label class="yoon-check" id="yoonLabel" style="display:none;">
+                    <input type="checkbox" id="isYoon"> 윤달
+                </label>
+            </div>
+            <label>생년월일 입력</label>
+            <input type="date" id="birthDate">
+        </div>
+        
+        <button class="calc-btn" onclick="calcAge()">내 나이 확인하기</button>
+
+        <div class="result-box" id="result" style="display:none; text-align:center;">
+            <div id="convertedDateInfo" style="display:none; margin-bottom: 15px; background: var(--hover-bg); padding: 8px; border-radius: 6px; font-size: 0.9rem;">
+                </div>
+
+            <div style="font-size:1.1rem; color:var(--text-sub);">현재 당신의 만 나이는</div>
+            <div class="main-age" id="ageMan">0세</div>
+            <div style="color:var(--text-sub); margin-bottom:20px;" id="ageKor">(연 나이 0세)</div>
+
+            <div class="result-grid">
+                <div class="res-card">
+                    <h3>띠</h3>
+                    <div class="res-val" id="zodiac">-</div>
+                </div>
+                <div class="res-card">
+                    <h3>별자리</h3>
+                    <div class="res-val" id="constellation">-</div>
+                </div>
+                <div class="res-card" style="grid-column: span 2; background:rgba(22, 163, 74, 0.1); border-color:#BBF7D0;">
+                    <h3 style="color:#166534;">다음 생일까지</h3>
+                    <div class="res-val" style="color:#15803D;" id="dDay">-</div>
+                </div>
+            </div>
+
+            <div class="advice-box" id="adviceBox" style="display:none;">
+                <div class="advice-text" id="adviceText"></div>
+            </div>
+        </div>
+
+        <div class="info-section">
+            <h2>2023년 6월, '만 나이 통일법' 완벽 정리</h2>
+            <p>대한민국은 오랫동안 태어나자마자 1살이 되는 '세는 나이(한국식 나이)', 현재 연도에서 출생 연도를 뺀 '연 나이', 그리고 생일이 지나야 1살을 먹는 '만 나이'를 혼용해 왔습니다. 이로 인한 법적, 행정적 혼란을 줄이기 위해 2023년 6월 28일부터 <strong>'만 나이 통일법'</strong>이 시행되었습니다. 이제 특별한 규정이 없는 한, 모든 법적·사회적 나이는 '만 나이'를 기준으로 합니다.</p>
+
+            <h3>1. 아직도 '연 나이'를 쓰는 곳이 있다?</h3>
+            <p>법이 바뀌었지만, 행정 편의상 여전히 '연 나이(현재 연도 - 출생 연도)'를 적용하는 분야가 있습니다. 술·담배 구매가 대표적입니다.</p>
+            <ul>
+                <li><strong>청소년 보호법:</strong> 술과 담배는 만 19세가 되는 해의 1월 1일부터 구매할 수 있습니다. 즉, 생일이 지나지 않아도 연도가 바뀌면 구매 가능합니다.</li>
+                <li><strong>병역법:</strong> 병역 판정 검사도 연 나이를 기준으로 소집됩니다.</li>
+                <li><strong>초등학교 입학:</strong> 만 6세가 된 날이 속하는 해의 다음 해 3월 1일에 입학합니다. (결국 같은 연생이 같이 입학)</li>
+            </ul>
+
+            <h3>2. 12간지 띠 계산의 기준 (입춘 vs 1월 1일)</h3>
+            <p>"빠른 년생인데 무슨 띠예요?"라는 질문, 많이 들어보셨죠? 사실 띠를 나누는 기준에 대해서는 두 가지 설이 있습니다.</p>
+            <ul>
+                <li><strong>절기설 (사주명리학):</strong> 매년 양력 2월 4일경인 <strong>'입춘(立春)'</strong>을 기준으로 띠가 바뀝니다. 사주를 볼 때는 이 기준을 따릅니다.</li>
+                <li><strong>현재 통용설:</strong> 현대 사회에서는 음력 1월 1일(설날)이나 양력 1월 1일을 기준으로 하기도 하지만, 통상적으로는 <strong>입춘</strong> 기준이 가장 전통적인 방식입니다.</li>
+            </ul>
+            <p>이지툴즈 계산기는 현대적인 편의를 위해 양력 출생 연도를 기준으로 가장 널리 통용되는 띠를 알려드립니다.</p>
+
+            <h3>3. 나이별 생애 주기와 재무 관리 팁</h3>
+            <p>나이는 단순한 숫자가 아니라, 내가 인생의 어느 지점을 지나고 있는지를 알려주는 이정표입니다.</p>
+            <ul>
+                <li><strong>20대 (사회 초년생):</strong> 종잣돈 모으기가 가장 중요한 시기입니다. 월급의 50% 이상을 저축하는 습관을 들이고, 청약 통장은 필수로 가입하세요.</li>
+                <li><strong>30대 (가정 형성기):</strong> 결혼, 출산, 주택 마련 등 목돈 들어갈 일이 많습니다. 대출 관리와 보험 리모델링을 통해 위험에 대비해야 합니다.</li>
+                <li><strong>40대 (자녀 성장기):</strong> 소득이 가장 높지만 지출도 가장 많은 시기입니다. 자녀 교육비와 노후 준비의 균형을 맞추는 것이 핵심입니다.</li>
+                <li><strong>50대 (은퇴 준비기):</strong> 은퇴가 코앞입니다. 국민연금, 퇴직연금, 개인연금의 '3층 연금' 구조를 점검하고, 제2의 인생을 위한 취미나 기술을 배워두세요.</li>
+            </ul>
+
+            <div class="highlight-box">
+                <strong>💡 재미로 보는 별자리 상식</strong><br>
+                별자리는 태어난 날 태양이 위치했던 별자리를 의미합니다. 서양 점성술에서 유래했으며, 물병자리(1/20~2/18)부터 염소자리(12/25~1/19)까지 총 12개가 있습니다. 2011년 NASA가 '뱀주인자리'를 언급하며 13별자리 설이 돌았지만, 기존의 점성술 체계인 12별자리는 그대로 유지되고 있습니다.
+            </div>
+        </div>
+
+        <a href="../index.html" class="back-btn">← 메인으로 돌아가기</a>
+    </div>
+
+    <script>
+        // 나이별 멘트 데이터베이스
+        const adviceDB = [
+            { min: 0, max: 2, msg: "👶 응애! 세상 모든 게 신기할 때예요. 부모님의 사랑을 듬뿍 받고 무럭무럭 자라세요! (잠만 잘 자도 효도랍니다)" },
+            { min: 3, max: 4, msg: "🧒 '싫어!', '안 해!' 미운 네 살? 아니죠, 자아가 형성되는 중요한 시기입니다. 호기심 대장님의 질문 폭격이 시작됩니다!" },
+            { min: 5, max: 7, msg: "🎒 유치원에서 작은 사회를 배우고 있군요. 친구들과 장난감을 나누며 배려심을 키워보세요. 곧 초등학생이 됩니다!" },
+            { min: 8, max: 10, msg: "🏫 초등학교 저학년! 받아쓰기도 중요하지만, 운동장에서 친구들과 뛰어노는 게 제일 큰 공부예요. 줄넘기는 몇 개나 하나요?" },
+            { min: 11, max: 13, msg: "🌱 몸도 마음도 쑥쑥 크는 사춘기가 오나요? 나만의 취미를 찾아보세요. 부모님 말씀이 잔소리처럼 들려도 다 사랑이랍니다." },
+            { min: 14, max: 16, msg: "🔥 중2병이라도 괜찮아! 질풍노도의 시기, 내가 진짜 좋아하는 게 뭔지 고민해보세요. 이 시기의 친구가 평생 친구가 되기도 해요." },
+            { min: 17, max: 19, msg: "📚 수험생 파이팅! 인생에서 가장 치열하게 공부하는 시기일지도 몰라요. 결과도 중요하지만, 그 과정에서 얻는 끈기가 당신의 자산이 될 거예요." },
+            { min: 20, max: 23, msg: "🎓 대학생, 혹은 사회로의 첫발! 실패를 두려워 말고 무엇이든 도전해볼 수 있는 황금기입니다. 배낭여행, 동아리, 알바, 연애 다 해보세요!" },
+            { min: 24, max: 26, msg: "💼 취업 준비로 고민이 많죠? 남들과 비교하지 말고 나만의 속도로 가도 괜찮아요. 당신은 아직 피지 않은 꽃봉오리입니다." },
+            { min: 27, max: 29, msg: "🏃‍♂️ 이십 대의 마지막, 조금은 성숙해진 나를 발견하는 시기. '나'를 위한 투자를 아끼지 마세요. 독립이나 결혼에 대한 고민도 시작되겠죠?" },
+            { min: 30, max: 34, msg: "🚀 서른, 잔치는 끝났다? 아니요, 이제 진짜 내 인생의 2막이 시작됩니다. 커리어 확장에 집중하고, 재테크(청약, 투자)에 눈을 뜨셔야 합니다." },
+            { min: 35, max: 39, msg: "⚖️ 책임감이 무거워지는 시기. 회사에서도 가정에서도 허리 역할을 하고 계시네요. 하지만 건강보다 중요한 건 없어요. 영양제 꼭 챙겨 드세요!" },
+            { min: 40, max: 49, msg: "🌳 인생의 허리, 불혹! 흔들리지 않는 편안함...은 침대 광고고, 여전히 고민은 많지만 지혜롭게 헤쳐나갈 수 있어요. 정기 건강검진은 필수입니다." },
+            { min: 50, max: 59, msg: "🍂 지천명, 하늘의 뜻을 아는 나이. 은퇴 준비와 제2의 인생 설계를 시작할 때입니다. 자녀들 뒷바라지하느라 미뤄뒀던 취미 생활을 다시 꺼내보세요." },
+            { min: 60, max: 69, msg: "👴 이순, 귀가 순해지는 나이. 그동안 치열하게 사시느라 고생 많으셨습니다. 이제는 남 눈치 보지 말고 나 자신을 위해 행복하게 사세요." },
+            { min: 70, max: 79, msg: "🌟 고희를 넘긴 당신, 살아온 세월 자체가 존경스럽습니다. 가벼운 산책과 소식(小食)으로 건강을 유지하며, 손주들에게 지혜를 들려주세요." },
+            { min: 80, max: 150, msg: "🙏 산수, 미수, 졸수... 장수의 아이콘이시네요! 하루하루가 선물 같은 날들입니다. 건강하고 평안한 여생을 기원합니다." }
+        ];
+
+        // 음력 체크박스 표시 토글
+        function toggleYoon(show) {
+            document.getElementById('yoonLabel').style.display = show ? 'inline-block' : 'none';
+        }
+
+        function calcAge() {
+            const birthStr = document.getElementById('birthDate').value;
+            if(!birthStr) { showToast("생년월일을 입력해주세요."); return; }
+
+            const isLunar = document.querySelector('input[name="calType"]:checked').value === 'lunar';
+            const isYoon = document.getElementById('isYoon').checked;
+            
+            let birthDateObj;
+            let convertedMsg = "";
+
+            if (isLunar) {
+                // 음력 -> 양력 변환 로직
+                try {
+                    const tempDate = new Date(birthStr);
+                    const y = tempDate.getFullYear();
+                    const m = tempDate.getMonth() + 1;
+                    const d = tempDate.getDate();
+
+                    const calendar = new KoreanLunarCalendar();
+                    calendar.setLunarDate(y, m, d, isYoon);
+                    
+                    const solar = calendar.getSolarCalendar();
+                    birthDateObj = new Date(solar.year, solar.month - 1, solar.day);
+                    
+                    convertedMsg = `입력하신 <strong>음력 ${y}.${m}.${d}</strong>은<br>양력으로 <strong>${solar.year}년 ${solar.month}월 ${solar.day}일</strong>입니다.`;
+                    
+                    // 변환 결과 표시
+                    const infoBox = document.getElementById('convertedDateInfo');
+                    infoBox.style.display = 'block';
+                    infoBox.innerHTML = convertedMsg;
+
+                } catch(e) {
+                    console.error(e);
+                    showToast("음력 날짜 변환 중 오류가 발생했습니다.");
+                    return;
+                }
+            } else {
+                // 양력인 경우
+                birthDateObj = new Date(birthStr);
+                document.getElementById('convertedDateInfo').style.display = 'none';
+            }
+
+            const today = new Date();
+            const by = birthDateObj.getFullYear();
+            const bm = birthDateObj.getMonth();
+            const bd = birthDateObj.getDate();
+
+            // 만 나이
+            let age = today.getFullYear() - by;
+            const m = today.getMonth() - bm;
+            if (m < 0 || (m === 0 && today.getDate() < bd)) age--;
+
+            // 연 나이
+            const ageYear = today.getFullYear() - by;
+
+            // 띠 (12간지) - 입춘 기준보다 통상적인 출생년도 기준 사용
+            const zodiacs = ["원숭이", "닭", "개", "돼지", "쥐", "소", "호랑이", "토끼", "용", "뱀", "말", "양"];
+            const z = zodiacs[by % 12];
+
+            // 별자리
+            const signs = [
+                {n:"염소", m:12, d:22}, {n:"물병", m:1, d:20}, {n:"물고기", m:2, d:19},
+                {n:"양", m:3, d:21}, {n:"황소", m:4, d:20}, {n:"쌍둥이", m:5, d:21},
+                {n:"게", m:6, d:22}, {n:"사자", m:7, d:23}, {n:"처녀", m:8, d:23},
+                {n:"천칭", m:9, d:23}, {n:"전갈", m:10, d:23}, {n:"사수", m:11, d:23}, {n:"염소", m:12, d:25}
+            ];
+            let sign = "염소";
+            const monthDay = (bm + 1) * 100 + bd;
+            for(let i=0; i<signs.length-1; i++) {
+                if(monthDay >= (signs[i].m*100 + signs[i].d) && monthDay < (signs[i+1].m*100 + signs[i+1].d)) {
+                    sign = signs[i].n; break;
+                }
+            }
+            if(monthDay >= 1222 || monthDay <= 119) sign = "염소";
+
+            // D-day 계산 (다가오는 생일)
+            // 음력인 경우, 매년 음력 생일을 양력으로 변환해야 정확하지만, 
+            // 여기서는 '법적 나이' 계산이 목적이므로 변환된 양력 생일(주민등록상 생일)을 기준으로 D-day 계산
+            let nextBirth = new Date(today.getFullYear(), bm, bd);
+            if(nextBirth < today) {
+                nextBirth.setFullYear(today.getFullYear() + 1);
+            }
+            const diff = Math.ceil((nextBirth - today) / (1000 * 60 * 60 * 24));
+
+            // 나이별 멘트 찾기
+            const advice = adviceDB.find(a => age >= a.min && age <= a.max);
+            const msg = advice ? advice.msg : "오늘 하루도 행복하게 보내세요!";
+
+            document.getElementById('result').style.display = 'block';
+            document.getElementById('ageMan').innerText = age + "세";
+            document.getElementById('ageKor').innerText = `(연 나이 ${ageYear}세)`;
+            document.getElementById('zodiac').innerText = z + "띠";
+            document.getElementById('constellation').innerText = sign + "자리";
+            document.getElementById('dDay').innerText = `D-${diff}`;
+            
+            // 조언 출력
+            document.getElementById('adviceBox').style.display = 'block';
+            document.getElementById('adviceText').innerHTML = `<span class="advice-highlight">${age}세</span>의 당신에게:<br>${msg}`;
+        }
+    </script>
+
+    <script>
+        // 다크모드 토글 기능
+        function toggleThemeTool() {
+            const current = document.documentElement.getAttribute('data-theme');
+            if (current === 'dark') {
+                document.documentElement.setAttribute('data-theme', 'light');
+                localStorage.setItem('theme', 'light');
+            } else {
+                document.documentElement.setAttribute('data-theme', 'dark');
+                localStorage.setItem('theme', 'dark');
+            }
+        }
+    </script>
+
+    <script>
+        // 토스트 알림 기능
+        window.alert = function(message) {
+            showToast(message);
+        };
+
+        function showToast(message) {
+            let container = document.getElementById('toast-container');
+            if (!container) {
+                container = document.createElement('div');
+                container.id = 'toast-container';
+                document.body.appendChild(container);
+            }
+            const toast = document.createElement('div');
+            toast.className = 'toast-message';
+            toast.innerHTML = `<i class="fas fa-check-circle"></i> <span>${message}</span>`;
+            container.appendChild(toast);
+            requestAnimationFrame(() => {
+                setTimeout(() => { toast.classList.add('show'); }, 10);
+            });
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => { 
+                    if(container.contains(toast)) container.removeChild(toast);
+                }, 300);
+            }, 2500);
+        }
+    </script>
+</body>
+</html>

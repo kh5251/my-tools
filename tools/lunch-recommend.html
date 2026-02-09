@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-9J3H9RR9ZD"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-9J3H9RR9ZD');
+    </script>
+
+    <script>
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'dark') {
+            document.documentElement.setAttribute('data-theme', 'dark');
+        }
+    </script>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>점심 메뉴 추천 (랜덤 룰렛) - 이지툴즈</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --primary: #F59E0B; }
+        
+        .menu-display-area {
+            background: #FFFBEB;
+            border: 2px dashed #FCD34D;
+            border-radius: 16px;
+            padding: 40px 20px;
+            margin: 20px 0;
+            min-height: 120px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .menu-text {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: #333;
+            margin: 0;
+            transition: transform 0.1s;
+            word-break: keep-all;
+        }
+        
+        .menu-sub {
+            font-size: 1rem;
+            color: #D97706;
+            margin-top: 10px;
+            font-weight: bold;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .category-box { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-bottom: 20px; }
+        .cat-btn { padding: 8px 16px; border: 1px solid #ddd; border-radius: 20px; background: white; cursor: pointer; font-size: 0.95rem; transition: 0.2s; color: #555; }
+        .cat-btn:hover { background: #f3f4f6; }
+        .cat-btn.active { background: var(--primary); color: white; border-color: var(--primary); font-weight: bold; box-shadow: 0 2px 4px rgba(245, 158, 11, 0.3); }
+
+        /* 결정됐을 때 애니메이션 */
+        .pop-animation { animation: pop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); color: var(--primary); }
+        @keyframes pop {
+            0% { transform: scale(0.5); opacity: 0; }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+    </style>
+    <link rel="manifest" href="../manifest.json">
+
+    <link rel="icon" type="image/png" sizes="32x32" href="../images/icon-192.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="../images/icon-192.png">
+
+</head>
+<body class="tool-page">
+    <div class="container">
+    <button class="tool-theme-btn" onclick="toggleThemeTool()">
+        <i class="fas fa-moon"></i>
+    </button>
+
+        <h1><i class="fas fa-utensils"></i> 오늘 점심 뭐 먹지?</h1>
+        <p style="text-align:center; color:#666; font-size:0.9rem;">
+            총 <strong>160개</strong>의 메뉴 중 당신의 운명을 확인하세요!
+        </p>
+
+        <div class="category-box">
+            <button class="cat-btn active" onclick="setCat('all')">전체</button>
+            <button class="cat-btn" onclick="setCat('korean')">한식</button>
+            <button class="cat-btn" onclick="setCat('chinese')">중식</button>
+            <button class="cat-btn" onclick="setCat('japanese')">일식</button>
+            <button class="cat-btn" onclick="setCat('western')">양식/기타</button>
+            <button class="cat-btn" onclick="setCat('snack')">분식/간편</button>
+        </div>
+
+        <div class="menu-display-area">
+            <div class="menu-text" id="menuResult">?</div>
+            <div class="menu-sub" id="menuSub">오늘의 추천 메뉴</div>
+        </div>
+
+        <button class="calc-btn" onclick="pickMenu()" id="startBtn">메뉴 골라줘! 🎲</button>
+
+        <div class="info-section">
+            <h2>결정 장애 탈출! 점심 메뉴 고르기 노하우</h2>
+            <p>직장인 3대 난제 중 하나인 점심 메뉴 선정. "아무거나"라고 말하고선 막상 고르면 "그건 좀..."이라고 하는 동료 때문에 스트레스받으신 적 있나요? 이제 고민하지 말고 이지툴즈의 <strong>랜덤 메뉴 추천기</strong>를 돌려보세요.</p>
+
+            <h3>1. 실패 없는 메뉴 선정 팁</h3>
+            <ul>
+                <li><strong>소거법 활용:</strong> "뭐 먹을래?" 대신 "못 먹는 거 있어?" 또는 "어제 뭐 먹었어?"부터 시작하세요. 면, 밥, 빵 중 하나만 정해도 선택지가 확 줄어듭니다.</li>
+                <li><strong>날씨 매칭:</strong> 비 오는 날은 칼국수나 파전, 더운 날은 냉면이나 소바, 쌀쌀한 날은 국밥이나 찌개가 국룰입니다.</li>
+                <li><strong>랜덤의 미학:</strong> 도저히 합의가 안 될 때는 이 룰렛이 정해주는 대로 군말 없이 따르기로 내기를 거세요. 의외로 색다른 맛집을 발견할 수도 있습니다.</li>
+            </ul>
+
+            <h3>2. 직장인 점심 메뉴 월드컵 TOP 5</h3>
+            <p>빅데이터가 뽑은 한국 직장인의 소울 푸드 순위입니다.</p>
+            <ol>
+                <li><strong>김치찌개:</strong> 호불호 없이 든든한 한 끼의 정석</li>
+                <li><strong>제육볶음:</strong> 고기 반찬이 필요할 때 최고의 선택</li>
+                <li><strong>돈가스:</strong> "오늘 돈가스 어때?"는 실패 확률 0%의 마법의 주문</li>
+                <li><strong>짜장면/짬뽕:</strong> 빠르고 간편하게, 스트레스 풀리는 맛</li>
+                <li><strong>국밥 (순대/돼지):</strong> 뜨끈한 국물로 속 풀고 싶을 때 1순위</li>
+            </ol>
+        </div>
+
+        <a href="../index.html" class="back-btn">← 메인으로 돌아가기</a>
+    </div>
+
+    <script>
+        // 160개 이상의 방대한 메뉴 데이터베이스
+        const menus = {
+            korean: [
+                "김치찌개", "된장찌개", "순두부찌개", "부대찌개", "청국장", "동태찌개", "비지찌개", "고추장찌개", "참치김치찌개", "돼지김치찌개",
+                "제육볶음", "오징어볶음", "쭈꾸미볶음", "낙지볶음", "불고기", "뚝배기불고기", "갈비찜", "닭볶음탕", "찜닭", "닭갈비",
+                "비빔밥", "돌솥비빔밥", "육회비빔밥", "콩나물국밥", "순대국", "뼈해장국", "설렁탕", "갈비탕", "곰탕", "육개장", "선지해장국", "황태해장국", "도가니탕", "삼계탕",
+                "칼국수", "수제비", "잔치국수", "비빔국수", "콩국수", "막국수", "떡만두국", "만두국", "미역국", "북엇국",
+                "고등어구이", "삼치구이", "갈치조림", "고등어조림", "쌈밥", "보리밥", "가정식 백반", "한식 뷔페", "보쌈", "족발", "삼겹살"
+            ],
+            chinese: [
+                "짜장면", "간짜장", "쟁반짜장", "삼선짜장", "유니짜장",
+                "짬뽕", "삼선짬뽕", "나가사키짬뽕", "고기짬뽕", "백짬뽕", "볶음짬뽕",
+                "볶음밥", "새우볶음밥", "게살볶음밥", "잡채밥", "마파두부밥", "유산슬밥", "중화비빔밥",
+                "탕수육", "꿔바로우", "깐풍기", "유린기", "라조기", "칠리새우", "크림새우",
+                "마라탕", "마라샹궈", "양꼬치", "군만두", "물만두", "딤섬", "우육면", "탄탄면"
+            ],
+            japanese: [
+                "돈가스", "치즈돈가스", "안심가스", "등심가스", "생선가스", "가츠동 (돈가스덮밥)", "규동 (소고기덮밥)", "부타동 (돼지고기덮밥)", "오야코동 (닭고기덮밥)", "사케동 (연어덮밥)", "장어덮밥", "회덮밥",
+                "초밥", "연어초밥", "광어초밥", "모듬초밥", "캘리포니아롤", "후토마키",
+                "우동", "냉우동", "볶음우동", "라멘 (돈코츠)", "라멘 (미소)", "라멘 (소유)", "츠케멘", "마제소바", "냉모밀", "판모밀",
+                "일본식 카레", "카레우동", "하이라이스", "오코노미야키", "타코야키", "텐동 (튀김덮밥)"
+            ],
+            western: [
+                "햄버거", "수제버거", "치즈버거", "치킨버거", "샌드위치", "서브웨이", "토스트", "베이글", "샐러드", "포케",
+                "피자", "페퍼로니피자", "고르곤졸라", "파스타 (토마토)", "파스타 (크림)", "파스타 (오일)", "파스타 (로제)", "빠네 파스타", "리조또", "라자냐",
+                "스테이크", "찹스테이크", "함박스테이크", "바비큐 폭립", "그라탕", "오므라이스", "필라프",
+                "쌀국수", "분짜", "월남쌈", "팟타이", "나시고랭", "미고랭", "푸팟퐁커리", "인도 커리 & 난", "타코", "부리또", "케밥"
+            ],
+            snack: [
+                "떡볶이", "라볶이", "즉석떡볶이", "로제떡볶이", "순대", "튀김", "김밥", "참치김밥", "돈가스김밥", "주먹밥", "유부초밥",
+                "라면", "김치라면", "치즈라면", "만두라면", "쫄면", "비빔면", "짜파게티", "도시락 (편의점)", "토스트 (이삭)", "핫도그", "닭강정", "밥버거"
+            ]
+        };
+
+        let currentCat = 'all';
+        let isSpinning = false;
+
+        function setCat(cat) {
+            if(isSpinning) return;
+            currentCat = cat;
+            document.querySelectorAll('.cat-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+        }
+
+        function pickMenu() {
+            if(isSpinning) return;
+            
+            // 메뉴 리스트 구성
+            let list = [];
+            if(currentCat === 'all') {
+                list = [...menus.korean, ...menus.chinese, ...menus.japanese, ...menus.western, ...menus.snack];
+            } else {
+                list = menus[currentCat];
+            }
+
+            // 시작 설정
+            isSpinning = true;
+            const display = document.getElementById('menuResult');
+            const sub = document.getElementById('menuSub');
+            const btn = document.getElementById('startBtn');
+            
+            display.classList.remove('pop-animation');
+            display.style.color = "#333";
+            sub.style.opacity = 0;
+            btn.innerText = "고르는 중...";
+            btn.style.backgroundColor = "#9CA3AF"; // 회색으로 변경
+
+            // 룰렛 애니메이션 로직
+            let count = 0;
+            let speed = 50; // 초기 속도 (빠름)
+            let maxCount = 25; // 총 돌아가는 횟수
+
+            const runRoulette = () => {
+                // 랜덤 메뉴 표시
+                const r = Math.floor(Math.random() * list.length);
+                display.innerText = list[r];
+                count++;
+
+                if (count < maxCount) {
+                    // 점점 느려지게 (속도 조절)
+                    if (count > 15) speed += 30; 
+                    if (count > 20) speed += 50;
+                    setTimeout(runRoulette, speed);
+                } else {
+                    // 멈춤 및 결과 발표
+                    finishRoulette(list[r]);
+                }
+            };
+
+            runRoulette();
+        }
+
+        function finishRoulette(finalMenu) {
+            const display = document.getElementById('menuResult');
+            const sub = document.getElementById('menuSub');
+            const btn = document.getElementById('startBtn');
+
+            // 1. 결과 표시 및 애니메이션
+            display.innerText = finalMenu;
+            display.classList.add('pop-animation');
+            sub.style.opacity = 1;
+            sub.innerText = "🍽️ 맛있게 드세요!";
+
+            // 2. 버튼 복구
+            isSpinning = false;
+            btn.innerText = "다시 고르기 🎲";
+            btn.style.backgroundColor = ""; // 원래 색으로
+
+            // 3. 폭죽 효과 (Canvas Confetti)
+            confetti({
+                particleCount: 150,
+                spread: 70,
+                origin: { y: 0.6 },
+                colors: ['#F59E0B', '#EF4444', '#10B981', '#3B82F6']
+            });
+        }
+    </script>
+
+    <script>
+        // 다크모드 토글 기능
+        function toggleThemeTool() {
+            const current = document.documentElement.getAttribute('data-theme');
+            if (current === 'dark') {
+                document.documentElement.setAttribute('data-theme', 'light');
+                localStorage.setItem('theme', 'light');
+            } else {
+                document.documentElement.setAttribute('data-theme', 'dark');
+                localStorage.setItem('theme', 'dark');
+            }
+        }
+    </script>
+
+    <script>
+        // 기존 alert() 함수를 가로채서 토스트로 보여주는 마법의 코드
+        window.alert = function(message) {
+            showToast(message);
+        };
+
+        function showToast(message) {
+            // 컨테이너가 없으면 생성
+            let container = document.getElementById('toast-container');
+            if (!container) {
+                container = document.createElement('div');
+                container.id = 'toast-container';
+                document.body.appendChild(container);
+            }
+
+            // 메시지 박스 생성
+            const toast = document.createElement('div');
+            toast.className = 'toast-message';
+            // 아이콘과 메시지 결합
+            toast.innerHTML = `<i class="fas fa-check-circle"></i> <span>${message}</span>`;
+
+            container.appendChild(toast);
+
+            // 애니메이션 시작
+            requestAnimationFrame(() => {
+                setTimeout(() => { toast.classList.add('show'); }, 10);
+            });
+
+            // 2.5초 후 제거
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => { 
+                    if(container.contains(toast)) container.removeChild(toast);
+                }, 300);
+            }, 2500);
+        }
+    </script>
+</body>
+
+
+</html>

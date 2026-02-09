@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-9J3H9RR9ZD"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-9J3H9RR9ZD');
+    </script>
+
+    <script>
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'dark') {
+            document.documentElement.setAttribute('data-theme', 'dark');
+        }
+    </script>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JSON 포맷터 - 이지툴즈</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root { --primary: #60A5FA; }
+        
+        /* 다크모드 강제 적용 */
+        body { background-color: #1E1E1E !important; color: #fff !important; }
+        .container { background-color: #1E1E1E !important; box-shadow: none; max-width: 1000px; }
+        textarea { background: #2D2D2D; color: #eee; border: 1px solid #444; font-family: monospace; height: 50vh; }
+        h1 { color: #60A5FA; }
+        
+        .editor-area { display: flex; gap: 20px; }
+        /* SEO 글 섹션 다크모드 대응 */
+        .info-section { color: #ccc; border-top-color: #333; }
+        .info-section h2 { border-bottom-color: #333; }
+        .info-section h3 { color: #eee; }
+        .highlight-box { background-color: #333; border-color: #555; }
+        
+        @media (max-width: 768px) { .editor-area { flex-direction: column; } }
+    </style>
+    <link rel="manifest" href="../manifest.json">
+
+    <link rel="icon" type="image/png" sizes="32x32" href="../images/icon-192.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="../images/icon-192.png">
+
+</head>
+<body class="tool-page">
+    <div class="container">
+    <button class="tool-theme-btn" onclick="toggleThemeTool()">
+        <i class="fas fa-moon"></i>
+    </button>
+
+        <h1><i class="fas fa-code"></i> JSON 포맷터</h1>
+        
+        <div class="editor-area">
+            <textarea id="input" placeholder="지저분한 JSON을 여기에 붙여넣으세요..."></textarea>
+            <textarea id="output" readonly placeholder="깔끔한 결과가 여기에 나옵니다."></textarea>
+        </div>
+
+        <div style="margin-top:20px;">
+            <button class="calc-btn" style="width:auto; padding:10px 30px; border-radius:30px;" onclick="formatJSON()">정렬하기 ✨</button>
+        </div>
+
+        <div class="info-section">
+            <h2>개발자의 필수품, JSON이란 무엇인가?</h2>
+            <p><strong>JSON(JavaScript Object Notation)</strong>은 사람이 읽고 쓰기 쉽고, 기계가 분석하고 생성하기도 쉬운 <strong>경량의 데이터 교환 형식</strong>입니다. 이름에 'JavaScript'가 들어가지만, 언어에 종속되지 않고 C, C++, C#, Java, Python 등 거의 모든 프로그래밍 언어에서 지원하는 표준 포맷입니다. 오늘날 웹 서버와 클라이언트(브라우저, 앱) 간의 통신에서 XML을 대체하여 가장 널리 사용되고 있습니다.</p>
+        
+            <h3>1. 왜 JSON 포맷터(Formatter)가 필요한가요?</h3>
+            <p>서버에서 데이터를 받을 때, 전송 속도를 높이기 위해 공백과 줄바꿈을 모두 제거한 <strong>Minified(압축된)</strong> 상태로 오는 경우가 많습니다. 이렇게 한 줄로 뭉쳐진 코드는 사람이 눈으로 보고 구조를 파악하거나 에러를 찾기가 거의 불가능합니다. 이지툴즈의 JSON 포맷터는 엉망으로 섞인 코드를 <strong>들여쓰기(Indentation)</strong>와 <strong>줄바꿈</strong>을 적용하여 '예쁜(Pretty)' 상태로 변환해 줍니다. 이를 통해 데이터의 계층 구조를 한눈에 파악하고 디버깅 효율을 높일 수 있습니다.</p>
+        
+            <h3>2. 자주 발생하는 JSON 문법 오류 (Syntax Error)</h3>
+            <p>JSON은 문법이 매우 엄격합니다. 코드 한 글자만 틀려도 전체가 깨져버립니다. 초보 개발자들이 가장 많이 하는 실수는 다음과 같습니다.</p>
+            <ul>
+                <li><strong>따옴표 실수:</strong> JSON의 키(Key)와 문자열 값(Value)은 반드시 <strong>큰따옴표("")</strong>로 감싸야 합니다. 자바스크립트처럼 작은따옴표('')를 쓰면 에러가 납니다.</li>
+                <li><strong>마지막 쉼표(Trailing Comma):</strong> 배열이나 객체의 마지막 요소 뒤에는 쉼표(,)를 찍으면 안 됩니다. (예: <code>{"a": 1, "b": 2,}</code> → 오류)</li>
+                <li><strong>주석 불가:</strong> JSON 표준은 주석(//, /* */)을 허용하지 않습니다. 데이터를 저장하는 용도이기 때문입니다.</li>
+            </ul>
+        
+            <div class="highlight-box">
+                <strong>💡 팁: 검증(Validation) 기능 포함</strong><br>
+                이 도구는 단순한 정렬뿐만 아니라 <strong>유효성 검사</strong> 기능도 수행합니다. 만약 잘못된 JSON 코드를 넣고 '정렬하기'를 누르면, 구체적으로 어떤 부분에서 에러가 발생했는지 알려줍니다. 복사해 온 코드가 왜 작동하지 않는지 궁금하다면 이곳에 붙여넣어 보세요.
+            </div>
+        
+            <h3>3. JSON vs XML 간단 비교</h3>
+            <p>과거에는 데이터 전송에 XML을 많이 썼지만, 지금은 JSON이 대세가 되었습니다. 그 이유는 무엇일까요?</p>
+            <ul>
+                <li><strong>간결성:</strong> XML은 여는 태그와 닫는 태그(<code>&lt;name&gt;홍길동&lt;/name&gt;</code>)가 필요해 용량이 크지만, JSON은(<code>"name":"홍길동"</code>) 훨씬 짧고 가볍습니다.</li>
+                <li><strong>가독성:</strong> 배열([])과 객체({})를 사용하는 JSON 구조가 프로그래밍 언어의 데이터 구조와 더 직관적으로 매핑됩니다.</li>
+                <li><strong>속도:</strong> 브라우저에서 XML을 파싱 하는 것보다 JSON을 파싱 하는 속도가 훨씬 빠릅니다.</li>
+            </ul>
+        </div>
+
+        <a href="../index.html" class="back-btn" style="color:#888;">← 메인으로 돌아가기</a>
+    </div>
+
+    <script>
+        function formatJSON() {
+            const input = document.getElementById('input').value;
+            const out = document.getElementById('output');
+            try {
+                const o = JSON.parse(input);
+                out.value = JSON.stringify(o, null, 4);
+                out.style.borderColor = "#4ADE80";
+            } catch(e) {
+                out.value = "오류: " + e.message;
+                out.style.borderColor = "#EF4444";
+            }
+        }
+    </script>
+
+    <script>
+        // 다크모드 토글 기능
+        function toggleThemeTool() {
+            const current = document.documentElement.getAttribute('data-theme');
+            if (current === 'dark') {
+                document.documentElement.setAttribute('data-theme', 'light');
+                localStorage.setItem('theme', 'light');
+            } else {
+                document.documentElement.setAttribute('data-theme', 'dark');
+                localStorage.setItem('theme', 'dark');
+            }
+        }
+    </script>
+
+    <script>
+        // 기존 alert() 함수를 가로채서 토스트로 보여주는 마법의 코드
+        window.alert = function(message) {
+            showToast(message);
+        };
+
+        function showToast(message) {
+            // 컨테이너가 없으면 생성
+            let container = document.getElementById('toast-container');
+            if (!container) {
+                container = document.createElement('div');
+                container.id = 'toast-container';
+                document.body.appendChild(container);
+            }
+
+            // 메시지 박스 생성
+            const toast = document.createElement('div');
+            toast.className = 'toast-message';
+            // 아이콘과 메시지 결합
+            toast.innerHTML = `<i class="fas fa-check-circle"></i> <span>${message}</span>`;
+
+            container.appendChild(toast);
+
+            // 애니메이션 시작
+            requestAnimationFrame(() => {
+                setTimeout(() => { toast.classList.add('show'); }, 10);
+            });
+
+            // 2.5초 후 제거
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => { 
+                    if(container.contains(toast)) container.removeChild(toast);
+                }, 300);
+            }, 2500);
+        }
+    </script>
+</body>
+
+
+</html>

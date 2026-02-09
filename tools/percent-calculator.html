@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-9J3H9RR9ZD"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-9J3H9RR9ZD');
+    </script>
+
+    <script>
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'dark') {
+            document.documentElement.setAttribute('data-theme', 'dark');
+        }
+    </script>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>퍼센트 계산기 (할인율, 수익률, 증가율) - 이지툴즈</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root { --primary: #4F46E5; }
+        
+        /* 고유 디자인 */
+        .calc-row { background: #EEF2FF; padding: 20px; border-radius: 12px; margin-bottom: 15px; display: flex; flex-wrap: wrap; align-items: center; gap: 10px; border: 1px solid #C7D2FE; }
+        .calc-row input { padding: 10px; width: 100px; text-align: right; }
+        .calc-row span { font-weight: bold; color: #555; }
+        .result { background: white; padding: 10px 20px; border-radius: 6px; font-weight: bold; color: #DC2626; border: 1px solid #ddd; min-width: 80px; text-align: center; margin-left: auto; }
+        .calc-btn { width: auto; margin: 0; padding: 10px 20px; font-size: 1rem; }
+    </style>
+    <link rel="manifest" href="../manifest.json">
+
+    <link rel="icon" type="image/png" sizes="32x32" href="../images/icon-192.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="../images/icon-192.png">
+
+</head>
+<body class="tool-page">
+    <div class="container">
+    <button class="tool-theme-btn" onclick="toggleThemeTool()">
+        <i class="fas fa-moon"></i>
+    </button>
+
+        <h1><i class="fas fa-percent"></i> 퍼센트 계산기</h1>
+
+        <div class="calc-row">
+            <span>전체값</span> <input type="number" id="v1_total" placeholder="10000"> <span>의</span>
+            <input type="number" id="v1_percent" placeholder="20"> <span>%는?</span>
+            <button class="calc-btn" onclick="calc1()">계산</button>
+            <div class="result" id="res1">0</div>
+        </div>
+
+        <div class="calc-row">
+            <span>전체값</span> <input type="number" id="v2_total" placeholder="50000"> <span>에서</span>
+            <input type="number" id="v2_part" placeholder="15000"> <span>은(는) 몇 %?</span>
+            <button class="calc-btn" onclick="calc2()">계산</button>
+            <div class="result" id="res2">0%</div>
+        </div>
+
+        <div class="calc-row">
+            <span>기존값</span> <input type="number" id="v3_old" placeholder="100"> <span>이(가)</span>
+            <input type="number" id="v3_new" placeholder="150"> <span>(으)로 바뀌면?</span>
+            <button class="calc-btn" onclick="calc3()">계산</button>
+            <div class="result" id="res3">0% 증가</div>
+        </div>
+
+        <div class="calc-row">
+            <span>숫자</span> <input type="number" id="v4_val" placeholder="10000"> <span>이(가)</span>
+            <input type="number" id="v4_percent" placeholder="10"> <span>% 증가하면?</span>
+            <button class="calc-btn" onclick="calc4()">계산</button>
+            <div class="result" id="res4">0</div>
+        </div>
+
+        <div class="info-section">
+            <h2>일상생활 속 필수, 퍼센트(%) 계산의 모든 것</h2>
+            <p>우리는 매일 숫자와 마주합니다. 백화점 세일 기간의 할인율, 주식 투자의 수익률, 연봉 협상 시 인상률까지 모든 것이 <strong>퍼센트(Percent)</strong>로 표현됩니다. 퍼센트는 '100에 대하여(Per Cent)'라는 뜻으로, 전체를 100으로 놓았을 때 해당 수량이 차지하는 비율을 의미합니다. 이 계산기는 복잡한 공식 없이, 빈칸에 숫자만 넣으면 4가지 상황에 맞는 정확한 결과를 즉시 알려드립니다.</p>
+
+            <h3>1. 상황별 계산법 완벽 정리</h3>
+            <p>살면서 가장 자주 마주치는 4가지 상황입니다.</p>
+            <ul>
+                <li><strong>비율 계산 (전체의 몇 %는 얼마?):</strong> "3만 원짜리 옷을 20% 할인해 준대." 이때 20%가 얼마인지 궁금할 때 사용합니다. (30,000 × 0.2 = 6,000원 할인)</li>
+                <li><strong>일부값 계산 (얼마나 차지할까?):</strong> "50문제 중 40개를 맞혔어." 내 점수가 몇 점(몇 %)인지 궁금할 때 씁니다. (40 ÷ 50 × 100 = 80점)</li>
+                <li><strong>증감율 계산 (얼마나 올랐을까?):</strong> 주식이나 코인 투자 시 가장 많이 씁니다. "100만 원이 120만 원이 되었다면?" 수익률을 계산합니다. ((120 - 100) ÷ 100 × 100 = 20% 증가)</li>
+                <li><strong>증가값 계산 (인상 후 금액은?):</strong> "내년 연봉이 5% 오른대." 현재 연봉에 5%를 더한 최종 금액을 알고 싶을 때 유용합니다.</li>
+            </ul>
+
+            <div class="highlight-box">
+                <strong>💡 계산기 없이 암산하는 꿀팁 (10% 법칙)</strong><br>
+                급하게 대략적인 계산이 필요할 땐 <strong>'10%'</strong>를 기준으로 삼으세요. 어떤 숫자든 <strong>맨 끝자리를 하나 지우면(소수점 이동) 10%</strong>입니다. 예를 들어 54,000원의 10%는 5,400원이고, 20%는 그 두 배인 10,800원입니다. 1%는 거기서 점을 하나 더 찍은 540원입니다. 이 원리만 알면 팁이나 대략적인 할인 금액을 3초 만에 구할 수 있습니다.
+            </div>
+
+            <h3>2. 퍼센트 포인트(%p)와 퍼센트(%)의 차이</h3>
+            <p>뉴스에서 "실업률이 3%에서 4%로 1% 포인트 상승했다"라는 말을 들어보셨나요? 이미 퍼센트로 된 수치끼리의 차이를 말할 때는 그냥 '%'가 아니라 <strong>'%p(퍼센트 포인트)'</strong>라고 해야 정확합니다.</p>
+            <ul>
+                <li>3%에서 4%로 올랐다면? → <strong>1%p 상승</strong> (단순 차이)</li>
+                <li>비율로 따지면? → 3에서 4가 되었으니 <strong>약 33.3% 상승</strong> (증감율)</li>
+            </ul>
+            <p>이 작은 차이가 통계의 함정을 만들기도 하니 주의 깊게 살펴보세요.</p>
+        </div>
+
+        <a href="../index.html" class="back-btn">← 메인으로 돌아가기</a>
+    </div>
+
+    <script>
+        function calc1() {
+            const total = parseFloat(document.getElementById('v1_total').value);
+            const per = parseFloat(document.getElementById('v1_percent').value);
+            if(total && per) document.getElementById('res1').innerText = (total * (per/100)).toLocaleString();
+        }
+        function calc2() {
+            const total = parseFloat(document.getElementById('v2_total').value);
+            const part = parseFloat(document.getElementById('v2_part').value);
+            if(total && part) document.getElementById('res2').innerText = ((part / total) * 100).toFixed(2) + "%";
+        }
+        function calc3() {
+            const oldV = parseFloat(document.getElementById('v3_old').value);
+            const newV = parseFloat(document.getElementById('v3_new').value);
+            if(oldV && newV) {
+                const diff = ((newV - oldV) / oldV) * 100;
+                const type = diff > 0 ? "증가" : "감소";
+                document.getElementById('res3').innerText = `${Math.abs(diff).toFixed(2)}% ${type}`;
+            }
+        }
+        function calc4() {
+            const val = parseFloat(document.getElementById('v4_val').value);
+            const per = parseFloat(document.getElementById('v4_percent').value);
+            if(val && per) document.getElementById('res4').innerText = (val + (val * (per/100))).toLocaleString();
+        }
+    </script>
+
+    <script>
+        // 다크모드 토글 기능
+        function toggleThemeTool() {
+            const current = document.documentElement.getAttribute('data-theme');
+            if (current === 'dark') {
+                document.documentElement.setAttribute('data-theme', 'light');
+                localStorage.setItem('theme', 'light');
+            } else {
+                document.documentElement.setAttribute('data-theme', 'dark');
+                localStorage.setItem('theme', 'dark');
+            }
+        }
+    </script>
+
+    <script>
+        // 기존 alert() 함수를 가로채서 토스트로 보여주는 마법의 코드
+        window.alert = function(message) {
+            showToast(message);
+        };
+
+        function showToast(message) {
+            // 컨테이너가 없으면 생성
+            let container = document.getElementById('toast-container');
+            if (!container) {
+                container = document.createElement('div');
+                container.id = 'toast-container';
+                document.body.appendChild(container);
+            }
+
+            // 메시지 박스 생성
+            const toast = document.createElement('div');
+            toast.className = 'toast-message';
+            // 아이콘과 메시지 결합
+            toast.innerHTML = `<i class="fas fa-check-circle"></i> <span>${message}</span>`;
+
+            container.appendChild(toast);
+
+            // 애니메이션 시작
+            requestAnimationFrame(() => {
+                setTimeout(() => { toast.classList.add('show'); }, 10);
+            });
+
+            // 2.5초 후 제거
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => { 
+                    if(container.contains(toast)) container.removeChild(toast);
+                }, 300);
+            }, 2500);
+        }
+    </script>
+</body>
+
+
+</html>

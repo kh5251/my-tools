@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-9J3H9RR9ZD"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-9J3H9RR9ZD');
+    </script>
+
+    <script>
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'dark') {
+            document.documentElement.setAttribute('data-theme', 'dark');
+        }
+    </script>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>사다리 타기 (랜덤 내기) - 이지툴즈</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root { --primary: #8B5CF6; }
+        .setup-area { margin-bottom: 20px; }
+        .player-row { display: flex; gap: 10px; margin-bottom: 10px; }
+        .player-row input { flex: 1; padding: 10px; }
+        .result-list { margin-top: 20px; text-align: left; background: #F3F4F6; padding: 20px; border-radius: 10px; display: none; }
+        .match-item { display: flex; justify-content: space-between; padding: 10px; border-bottom: 1px solid #ddd; font-weight: bold; }
+        .match-item:last-child { border: none; }
+        .p-name { color: #333; }
+        .p-res { color: var(--primary); }
+    </style>
+    <link rel="manifest" href="../manifest.json">
+
+    <link rel="icon" type="image/png" sizes="32x32" href="../images/icon-192.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="../images/icon-192.png">
+
+</head>
+<body class="tool-page">
+    <div class="container">
+    <button class="tool-theme-btn" onclick="toggleThemeTool()">
+        <i class="fas fa-moon"></i>
+    </button>
+
+        <h1><i class="fas fa-stream"></i> 사다리 타기 (랜덤 매칭)</h1>
+        
+        <div class="input-group">
+            <label>참여 인원 수</label>
+            <div style="display:flex; gap:10px;">
+                <input type="number" id="pCount" value="3" min="2" max="10">
+                <button class="btn" style="background:#6B7280; color:white; width:80px; border-radius:8px;" onclick="setup()">설정</button>
+            </div>
+        </div>
+
+        <div id="inputs" class="setup-area">
+            </div>
+
+        <button class="calc-btn" onclick="runSadari()">결과 확인!</button>
+
+        <div class="result-list" id="result">
+            </div>
+
+        <div class="info-section">
+            <h2>공정한 내기의 대명사, 사다리 타기</h2>
+            <p>점심 내기, 커피 내기, 벌칙 정하기 등 일상에서 승부를 가려야 할 때 가장 많이 쓰는 방법이 바로 '사다리 타기'입니다. 사다리 타기는 참여자 수와 당첨 항목 수가 같을 때, 선을 따라 내려가며 1:1로 매칭되는 게임입니다. 이지툴즈의 사다리 게임은 복잡한 그림 대신, 컴퓨터의 난수 생성 알고리즘을 통해 순식간에 공정하게 짝을 지어주는 <strong>랜덤 매칭 방식</strong>을 사용합니다.</p>
+
+            <h3>1. 사다리 타기의 수학적 원리 (치환)</h3>
+            <p>사다리 타기는 수학적으로 <strong>'일대일 대응 함수(Bijective Function)'</strong>입니다. 세로줄(사람)이 내려가다가 가로줄(다리)을 만나면 옆으로 이동하는데, 어떤 가로줄을 만나도 겹치거나 끊어지지 않고 반드시 하나의 결과에 도달하게 됩니다. 이를 수학 용어로 '치환(Permutation)'이라고 합니다. 즉, 사다리 타기는 참여자들의 순서를 무작위로 섞는 것과 수학적으로 완벽하게 동일합니다.</p>
+
+            <h3>2. 진짜 랜덤일까? (확률의 공정성)</h3>
+            <p>손으로 사다리를 그릴 때는 "많이 꼬인 쪽이 걸릴 확률이 높다"거나 "직선 코스가 유리하다"는 속설이 있습니다. 실제로 사람이 그리면 패턴이 생길 수 있기 때문입니다. 하지만 컴퓨터 프로그램으로 돌리는 사다리 게임은 <strong>완전 무작위(Random)</strong> 방식을 사용하므로 패턴이나 편향이 없습니다. 꽝이 걸렸다면, 그것은 오직 당신의 운입니다!</p>
+        </div>
+
+        <a href="../index.html" class="back-btn">← 메인으로 돌아가기</a>
+    </div>
+
+    <script>
+        // 초기 3명 세팅
+        window.onload = setup;
+
+        function setup() {
+            const cnt = parseInt(document.getElementById('pCount').value);
+            if(cnt < 2 || cnt > 20) { alert("2~20명 사이로 입력해주세요."); return; }
+            
+            const div = document.getElementById('inputs');
+            div.innerHTML = "";
+            
+            for(let i=0; i<cnt; i++) {
+                div.innerHTML += `
+                    <div class="player-row">
+                        <input type="text" class="name-in" placeholder="참여자 ${i+1} (이름)">
+                        <input type="text" class="res-in" placeholder="결과 ${i+1} (벌칙/꽝)">
+                    </div>
+                `;
+            }
+            document.getElementById('result').style.display = 'none';
+        }
+
+        function runSadari() {
+            const names = Array.from(document.querySelectorAll('.name-in')).map(i => i.value || i.placeholder);
+            const results = Array.from(document.querySelectorAll('.res-in')).map(i => i.value || i.placeholder);
+
+            // 결과 배열 섞기 (Fisher-Yates Shuffle)
+            for (let i = results.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [results[i], results[j]] = [results[j], results[i]];
+            }
+
+            const resDiv = document.getElementById('result');
+            resDiv.innerHTML = "<h3 style='text-align:center; margin-top:0;'>🎉 결과 발표 🎉</h3>";
+            
+            names.forEach((name, idx) => {
+                resDiv.innerHTML += `
+                    <div class="match-item">
+                        <span class="p-name">${name}</span>
+                        <i class="fas fa-arrow-right" style="color:#ddd;"></i>
+                        <span class="p-res">${results[idx]}</span>
+                    </div>
+                `;
+            });
+            resDiv.style.display = 'block';
+        }
+    </script>
+
+    <script>
+        // 다크모드 토글 기능
+        function toggleThemeTool() {
+            const current = document.documentElement.getAttribute('data-theme');
+            if (current === 'dark') {
+                document.documentElement.setAttribute('data-theme', 'light');
+                localStorage.setItem('theme', 'light');
+            } else {
+                document.documentElement.setAttribute('data-theme', 'dark');
+                localStorage.setItem('theme', 'dark');
+            }
+        }
+    </script>
+
+    <script>
+        // 기존 alert() 함수를 가로채서 토스트로 보여주는 마법의 코드
+        window.alert = function(message) {
+            showToast(message);
+        };
+
+        function showToast(message) {
+            // 컨테이너가 없으면 생성
+            let container = document.getElementById('toast-container');
+            if (!container) {
+                container = document.createElement('div');
+                container.id = 'toast-container';
+                document.body.appendChild(container);
+            }
+
+            // 메시지 박스 생성
+            const toast = document.createElement('div');
+            toast.className = 'toast-message';
+            // 아이콘과 메시지 결합
+            toast.innerHTML = `<i class="fas fa-check-circle"></i> <span>${message}</span>`;
+
+            container.appendChild(toast);
+
+            // 애니메이션 시작
+            requestAnimationFrame(() => {
+                setTimeout(() => { toast.classList.add('show'); }, 10);
+            });
+
+            // 2.5초 후 제거
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => { 
+                    if(container.contains(toast)) container.removeChild(toast);
+                }, 300);
+            }, 2500);
+        }
+    </script>
+</body>
+
+
+</html>

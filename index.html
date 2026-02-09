@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-9J3H9RR9ZD"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-9J3H9RR9ZD');
+    </script>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>이지툴즈 - 생활의 모든 도구</title>
+    
+    <meta name="description" content="급여, 1RM, 배란일, 학점, 디데이 등 생활에 필요한 20가지 계산기를 무료로 사용하세요.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://k-tools.kr">
+    <meta property="og:title" content="이지툴즈 - 생활의 모든 도구">
+    <meta property="og:image" content="https://k-tools.kr/images/og-image.png">
+    
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#4F46E5">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <link rel="stylesheet" href="css/style.css?v=2">
+    
+    <link rel="icon" type="image/png" sizes="32x32" href="/images/icon-192.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/icon-192.png">
+
+    <script>
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'dark') {
+            document.documentElement.setAttribute('data-theme', 'dark');
+        }
+    </script>
+</head>
+<body>
+
+    <div class="overlay" onclick="toggleSidebar()"></div>
+
+    <aside class="sidebar" id="sidebar">
+        <div class="logo-area">
+            <i class="fas fa-toolbox"></i> 이지툴즈
+        </div>
+        
+        <div class="menu-list">
+            <div class="menu-item active" onclick="filterTools('all')">
+                <i class="fas fa-th-large"></i> 전체 보기
+            </div>
+            <div class="menu-category">생활 / 금융</div>
+            <div class="menu-item" onclick="filterTools('생활')"><i class="fas fa-home"></i> 생활 편의</div>
+            <div class="menu-item" onclick="filterTools('금융')"><i class="fas fa-coins"></i> 금융 계산</div>
+            <div class="menu-item" onclick="filterTools('건강')"><i class="fas fa-heartbeat"></i> 건강 / 운동</div>
+            <div class="menu-category">업무 / 개발</div>
+            <div class="menu-item" onclick="filterTools('업무')"><i class="fas fa-briefcase"></i> 업무 효율</div>
+            <div class="menu-item" onclick="filterTools('개발')"><i class="fas fa-code"></i> 개발 도구</div>
+            <div class="menu-category">기타</div>
+            <div class="menu-item" onclick="filterTools('재미')"><i class="fas fa-gamepad"></i> 재미 / 게임</div>
+        </div>
+
+        <div class="sidebar-footer">
+            &copy; 2024 EasyTools<br>
+            <a href="mailto:kh5251@gmail.com"><i class="far fa-envelope"></i> kh5251@gmail.com</a>
+        </div>
+    </aside>
+
+    <main class="main-content">
+        <header class="top-header">
+            <div class="header-left">
+                <button class="mobile-menu-btn" onclick="toggleSidebar()">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <div class="search-container">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="searchInput" placeholder="도구 검색 (예: 퍼센트, 학점)">
+                </div>
+            </div>
+            <button class="theme-btn" onclick="toggleTheme()" id="themeBtn" title="다크 모드 전환">
+                <i class="fas fa-moon"></i>
+            </button>
+        </header>
+
+        <div class="content-scroll">
+            <div class="welcome-banner">
+                <h2>👋 안녕하세요!</h2>
+                <p>생활에 필요한 20가지 도구가 준비되어 있습니다.<br>왼쪽 메뉴에서 원하는 카테고리를 선택해보세요.</p>
+            </div>
+
+            <h3 style="margin-bottom: 20px;">📌 도구 목록</h3>
+            <div class="tools-grid" id="toolsGrid">
+                </div>
+
+            <footer class="main-footer">
+                <div class="donation-simple">
+                    ☕ 개발자 후원: <strong>우리은행 1002-761-467240</strong>
+                </div>
+                <div class="footer-info">
+                    <strong>이지툴즈 (EasyTools)</strong> | 모든 도구는 무료로 제공됩니다.<br>
+                    <a href="privacy.html" style="color: inherit; text-decoration: underline;">개인정보처리방침</a> | 
+                    문의 및 건의사항: <a href="mailto:kh5251@gmail.com">kh5251@gmail.com</a>
+                </div>
+            </footer>
+            </div>
+    </main>
+
+    <script>
+        // 1. 도구 데이터 리스트
+        const tools = [
+            { name: "1RM 계산기", desc: "3대 운동 최대 중량 측정", icon: "fa-dumbbell", link: "tools/1rm-calculator.html", cat: "건강", new: true },
+            { name: "급여 변환기", desc: "시급 ↔ 연봉 (2025 최저임금)", icon: "fa-coins", link: "tools/wage-converter.html", cat: "금융", new: true },
+            { name: "배란일 계산기", desc: "생리주기, 가임기, 배란일", icon: "fa-venus", link: "tools/period-calculator.html", cat: "건강", new: true },
+            { name: "퍼센트 계산기", desc: "전체의 몇 %는 얼마? 할인율 계산", icon: "fa-percent", link: "tools/percent-calculator.html", cat: "금융", new: true },
+            { name: "BMR 계산기", desc: "나의 기초대사량 & 활동대사량", icon: "fa-running", link: "tools/bmr-calculator.html", cat: "건강", new: true },
+            { name: "학점 계산기", desc: "4.5만점 변환, 전공/교양 계산", icon: "fa-graduation-cap", link: "tools/gpa-calculator.html", cat: "생활", new: true },
+            { name: "JSON 포맷터", desc: "복잡한 JSON 코드 예쁘게 정렬", icon: "fa-code", link: "tools/json-formatter.html", cat: "개발", new: true },
+            { name: "반응속도 테스트", desc: "내 반사신경은 몇 ms? 게임", icon: "fa-stopwatch", link: "tools/reaction-test.html", cat: "재미", new: true },
+            { name: "평수 변환기", desc: "평수 ↔ 제곱미터 즉시 변환", icon: "fa-house", link: "tools/area-converter.html", cat: "생활" },
+            { name: "실수령액 계산기", desc: "내 월급 세금 떼면 얼마?", icon: "fa-money-bill-wave", link: "tools/salary-calculator.html", cat: "금융" },
+            { name: "만 나이 계산기", desc: "법적 나이, 띠, 별자리 확인", icon: "fa-birthday-cake", link: "tools/age-calculator.html", cat: "생활" },
+            { name: "이자 계산기", desc: "예금/적금 세후 수령액 확인", icon: "fa-chart-line", link: "tools/interest-calculator.html", cat: "금융" },
+            { name: "더치페이 계산기", desc: "깔끔한 N빵 & 정산 메시지", icon: "fa-wallet", link: "tools/dutch-pay-calculator.html", cat: "생활" },
+            { name: "글자수 세기", desc: "자소서/블로그 공백 포함 체크", icon: "fa-pen-nib", link: "tools/text-counter.html", cat: "업무" },
+            { name: "비밀번호 생성기", desc: "해킹 불가능한 강력한 암호", icon: "fa-lock", link: "tools/password-generator.html", cat: "업무" },
+            { name: "D-Day 계산기", desc: "커플 기념일, 시험 날짜 계산", icon: "fa-calendar-check", link: "tools/d-day-calculator.html", cat: "생활" },
+            { name: "QR코드 생성", desc: "링크를 이미지로 변환", icon: "fa-qrcode", link: "tools/qr-generator.html", cat: "업무" },
+            { name: "점심 메뉴 추천", desc: "오늘 뭐 먹지? 결정 장애 해결", icon: "fa-utensils", link: "tools/lunch-recommend.html", cat: "재미" },
+            { name: "로또 번호 생성", desc: "이번 주 1등 당첨 시뮬레이션", icon: "fa-ticket", link: "tools/lotto-generator.html", cat: "재미" },
+            { name: "사다리 타기", desc: "내기/벌칙 정하기 게임", icon: "fa-stream", link: "tools/sadari-game.html", cat: "재미" }
+        ];
+
+        // 2. 렌더링 및 기능 로직
+        const grid = document.getElementById('toolsGrid');
+        const searchInput = document.getElementById('searchInput');
+
+        function renderTools(category = 'all', searchText = "") {
+            grid.innerHTML = "";
+            const filtered = tools.filter(tool => {
+                const matchCat = category === 'all' || tool.cat === category || (category === '개발' && tool.cat === '업무');
+                const matchSearch = tool.name.includes(searchText) || tool.desc.includes(searchText);
+                return matchCat && matchSearch;
+            });
+
+            filtered.forEach(tool => {
+                const card = document.createElement('a');
+                card.href = tool.link;
+                card.className = 'tool-card';
+                let badgeHTML = tool.new ? '<span class="new-badge">NEW</span>' : '';
+                card.innerHTML = `
+                    ${badgeHTML}
+                    <div class="tool-icon"><i class="fas ${tool.icon}"></i></div>
+                    <h3>${tool.name}</h3>
+                    <p>${tool.desc}</p>
+                `;
+                grid.appendChild(card);
+            });
+        }
+        renderTools();
+
+        searchInput.addEventListener('input', (e) => renderTools('all', e.target.value));
+
+        function filterTools(cat) {
+            document.querySelectorAll('.menu-item').forEach(item => item.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+            if(window.innerWidth <= 768) toggleSidebar();
+            renderTools(cat);
+        }
+
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('open');
+            document.querySelector('.overlay').classList.toggle('active');
+        }
+
+        // 3. 다크모드
+        const themeBtn = document.getElementById('themeBtn');
+        const icon = themeBtn.querySelector('i');
+        const savedThemeInit = localStorage.getItem('theme');
+        if (savedThemeInit === 'dark') {
+            document.documentElement.setAttribute('data-theme', 'dark');
+            icon.classList.replace('fa-moon', 'fa-sun');
+        }
+
+        function toggleTheme() {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            if (currentTheme === 'dark') {
+                document.documentElement.setAttribute('data-theme', 'light');
+                localStorage.setItem('theme', 'light');
+                icon.classList.replace('fa-sun', 'fa-moon');
+            } else {
+                document.documentElement.setAttribute('data-theme', 'dark');
+                localStorage.setItem('theme', 'dark');
+                icon.classList.replace('fa-moon', 'fa-sun');
+            }
+        }
+
+        // 4. PWA 등록
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js');
+            });
+        }
+    </script>
+</body>
+</html>

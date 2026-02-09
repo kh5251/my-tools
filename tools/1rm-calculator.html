@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-9J3H9RR9ZD"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-9J3H9RR9ZD');
+    </script>
+
+    <script>
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'dark') {
+            document.documentElement.setAttribute('data-theme', 'dark');
+        }
+    </script>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>1RM 계산기 (최대 중량 측정) - 이지툴즈</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root { --primary: #2563EB; }
+        
+        /* 이 도구만의 고유 디자인 */
+        .percent-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        .percent-table th, .percent-table td { padding: 10px; border-bottom: 1px solid #eee; text-align: center; font-size: 0.95rem; }
+        .percent-table th { background: #F8FAFC; color: #64748B; }
+        .highlight { color: #DC2626; font-weight: bold; }
+        .one-rm-val { font-size: 3rem; font-weight: 800; color: var(--primary); margin: 5px 0 20px 0; }
+    </style>
+    <link rel="manifest" href="../manifest.json">
+
+    <link rel="icon" type="image/png" sizes="32x32" href="../images/icon-192.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="../images/icon-192.png">
+
+</head>
+<body class="tool-page">
+    <div class="container">
+    <button class="tool-theme-btn" onclick="toggleThemeTool()">
+        <i class="fas fa-moon"></i>
+    </button>
+
+        <h1><i class="fas fa-dumbbell"></i> 1RM 계산기</h1>
+        <p style="text-align:center; color:#666; font-size:0.9rem; margin-bottom:20px;">
+            가장 무겁게 들었던 무게와 횟수를 입력하세요.
+        </p>
+
+        <div class="input-group" style="display:flex; gap:10px;">
+            <div style="flex:1">
+                <label>중량 (kg)</label>
+                <input type="number" id="weight" placeholder="예: 60">
+            </div>
+            <div style="flex:1">
+                <label>횟수 (reps)</label>
+                <input type="number" id="reps" placeholder="예: 5">
+            </div>
+        </div>
+
+        <button class="calc-btn" onclick="calc1RM()">나의 1RM 확인하기</button>
+
+        <div class="result-box" id="result">
+            <div style="font-size:0.9rem; color:#64748B;">예상 1RM (최대 중량)</div>
+            <div class="one-rm-val" id="rmResult">0 kg</div>
+            <table class="percent-table">
+                <thead><tr><th>강도</th><th>무게</th><th>반복 가능</th></tr></thead>
+                <tbody id="percentList"></tbody>
+            </table>
+        </div>
+
+        <div class="info-section">
+            <h2>1RM이란 무엇이며, 왜 계산해야 할까요?</h2>
+            <p>웨이트 트레이닝을 진지하게 즐기는 헬스인이라면 '3대 500'이라는 단어를 한 번쯤 들어보셨을 겁니다. 여기서 말하는 중량의 기준이 바로 <strong>1RM (One Repetition Maximum)</strong>, 즉 '정확한 자세로 딱 1번 들어 올릴 수 있는 최대 중량'입니다. 1RM은 자신의 근력 수준을 객관적으로 나타내는 지표이자, 체계적인 운동 프로그램을 설계하는 기준점이 됩니다. 하지만 1RM을 측정하기 위해 무턱대고 가장 무거운 무게에 도전하는 것은 매우 위험합니다. 실패 시 깔릴 위험이 있고, 관절과 인대에 치명적인 부상을 입을 수 있기 때문입니다.</p>
+        
+            <h3>1. 간접 측정 공식 (Epley & Brzycki)</h3>
+            <p>부상 위험 없이 안전하게 내 1RM을 알 수 없을까요? 그래서 스포츠 과학자들은 <strong>'간접 측정 공식'</strong>을 개발했습니다. 자신이 5회~10회 정도 반복할 수 있는 무게를 측정한 뒤, 통계적 공식을 대입해 1RM을 추산하는 방식입니다.</p>
+            <ul>
+                <li><strong>Epley 공식:</strong> 반복 횟수가 많을 때(고반복) 비교적 정확하다고 알려져 있습니다.</li>
+                <li><strong>Brzycki 공식:</strong> 반복 횟수가 적을 때(저반복) 오차가 적어 가장 널리 쓰입니다.</li>
+            </ul>
+            <p>이지툴즈 1RM 계산기는 이 두 가지 공식의 평균값을 적용하여, 헬스장에서 바로 활용할 수 있는 최적의 예상 수치를 제공합니다.</p>
+        
+            <h3>2. 목적에 따른 중량 설정 (스트렝스 vs 근비대)</h3>
+            <p>자신의 1RM을 알았다면, 이제 운동 목적에 맞춰 세트당 무게를 설정해야 합니다. 무조건 무겁게 든다고 근육이 커지는 것은 아닙니다.</p>
+            <ul>
+                <li><strong>스트렝스 (파워리프팅):</strong> 1RM의 <strong>85~95%</strong> 중량으로 1~5회 반복합니다. 근육의 크기보다는 신경계를 발달시켜 순수 근력을 폭발적으로 늘리는 데 집중합니다. 휴식 시간은 3분 이상 길게 가져갑니다.</li>
+                <li><strong>근비대 (보디빌딩):</strong> 1RM의 <strong>65~80%</strong> 중량으로 8~12회 반복합니다. 근육에 적절한 미세 손상을 입히고 대사 스트레스를 주어 근육 사이즈를 키우는 데 가장 효율적인 구간입니다.</li>
+                <li><strong>근지구력:</strong> 1RM의 <strong>60% 이하</strong> 중량으로 15회 이상 반복합니다. 지치지 않는 근육을 만들거나, 재활 운동 초기 단계에 주로 사용합니다.</li>
+            </ul>
+        
+            <div class="highlight-box">
+                <strong>💡 측정 꿀팁과 주의사항</strong><br>
+                1RM 측정은 그날의 컨디션, 수면 시간, 영양 상태에 따라 5~10% 정도 오차가 발생할 수 있습니다. 따라서 계산된 수치를 맹신하기보다는 '가이드라인'으로 참고하여, 실제 훈련 시에는 본인의 컨디션에 맞춰 유연하게 조절하는 것이 좋습니다. 또한, 초보자의 경우 자세가 무너지지 않는 선에서 수행한 무게를 입력해야 정확한 결과를 얻을 수 있습니다.
+            </div>
+        
+            <h3>3. 점진적 과부하의 핵심</h3>
+            <p>근육을 성장시키기 위해서는 우리 몸이 적응하지 못하도록 지속적으로 더 큰 자극을 주어야 합니다. 이를 '점진적 과부하(Progressive Overload)'의 원칙이라고 합니다. 매주 혹은 매달 1RM을 다시 계산해 보세요. 지난달에는 60kg으로 10개를 했다면, 이번 달에는 65kg으로 10개를 도전해 보는 식입니다. 수치화된 기록은 강력한 동기부여가 되며, 정체기를 극복하는 열쇠가 됩니다.</p>
+        </div>
+
+        <a href="../index.html" class="back-btn">← 메인으로 돌아가기</a>
+    </div>
+
+    <script>
+        function calc1RM() {
+            const w = parseFloat(document.getElementById('weight').value);
+            const r = parseFloat(document.getElementById('reps').value);
+            if(!w || !r) { alert("무게와 횟수를 입력해주세요."); return; }
+            
+            // 공식: (Epley + Brzycki) / 2
+            const epley = w * (1 + r/30);
+            const brzycki = w * (36 / (37 - r));
+            const oneRM = Math.round((epley + brzycki) / 2);
+            showResult(oneRM);
+        }
+
+        function showResult(rm) {
+            document.getElementById('result').style.display = 'block';
+            document.getElementById('rmResult').innerText = rm + " kg";
+            
+            const percents = [95, 90, 85, 80, 75, 70, 60, 50];
+            const repsMap = {95:2, 90:4, 85:6, 80:8, 75:10, 70:12};
+            let html = "";
+            percents.forEach(p => {
+                const val = Math.round(rm * (p/100));
+                const repInfo = repsMap[p] ? `${repsMap[p]}회` : '-';
+                const cls = p >= 80 ? 'highlight' : '';
+                html += `<tr><td>${p}%</td><td class="${cls}">${val} kg</td><td>${repInfo}</td></tr>`;
+            });
+            document.getElementById('percentList').innerHTML = html;
+        }
+    </script>
+
+    <script>
+        // 다크모드 토글 기능
+        function toggleThemeTool() {
+            const current = document.documentElement.getAttribute('data-theme');
+            if (current === 'dark') {
+                document.documentElement.setAttribute('data-theme', 'light');
+                localStorage.setItem('theme', 'light');
+            } else {
+                document.documentElement.setAttribute('data-theme', 'dark');
+                localStorage.setItem('theme', 'dark');
+            }
+        }
+    </script>
+
+    <script>
+        // 기존 alert() 함수를 가로채서 토스트로 보여주는 마법의 코드
+        window.alert = function(message) {
+            showToast(message);
+        };
+
+        function showToast(message) {
+            // 컨테이너가 없으면 생성
+            let container = document.getElementById('toast-container');
+            if (!container) {
+                container = document.createElement('div');
+                container.id = 'toast-container';
+                document.body.appendChild(container);
+            }
+
+            // 메시지 박스 생성
+            const toast = document.createElement('div');
+            toast.className = 'toast-message';
+            // 아이콘과 메시지 결합
+            toast.innerHTML = `<i class="fas fa-check-circle"></i> <span>${message}</span>`;
+
+            container.appendChild(toast);
+
+            // 애니메이션 시작
+            requestAnimationFrame(() => {
+                setTimeout(() => { toast.classList.add('show'); }, 10);
+            });
+
+            // 2.5초 후 제거
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => { 
+                    if(container.contains(toast)) container.removeChild(toast);
+                }, 300);
+            }, 2500);
+        }
+    </script>
+</body>
+
+
+</html>

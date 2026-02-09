@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-9J3H9RR9ZD"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-9J3H9RR9ZD');
+    </script>
+
+    <script>
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'dark') {
+            document.documentElement.setAttribute('data-theme', 'dark');
+        }
+    </script>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>시급 연봉 변환기 - 이지툴즈</title>
+    <link rel="stylesheet" href="../css/style.css?v=2">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root { --primary: #D97706; }
+
+        /* 고유 디자인 */
+        .tab-box { display: flex; background: var(--hover-bg); border-radius: 8px; padding: 4px; margin-bottom: 20px; }
+        .tab { flex: 1; text-align: center; padding: 10px; cursor: pointer; border-radius: 6px; font-weight: bold; color: var(--text-sub); transition: 0.2s; }
+        .tab.active { background: var(--card-bg); color: var(--primary); box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        
+        .radio-group { display: flex; justify-content: center; gap: 20px; margin-bottom: 20px; background: var(--input-bg); padding: 10px; border-radius: 8px; border: 1px solid var(--border); }
+        .radio-group label { cursor: pointer; display: flex; align-items: center; gap: 5px; font-weight: 500; font-size: 0.95rem; margin: 0; }
+        .radio-group input[type="radio"] { width: auto; margin: 0; accent-color: var(--primary); }
+
+        .result-table { width: 100%; margin-top: 15px; border-collapse: separate; border-spacing: 0 8px; }
+        .result-table th { text-align: left; color: var(--text-sub); font-size: 0.9rem; width: 60px; }
+        .result-table td { background: var(--hover-bg); padding: 12px; border-radius: 6px; text-align: right; font-weight: bold; color: var(--text-main); }
+        .result-table td.highlight { color: var(--primary); font-size: 1.2rem; }
+    </style>
+    <link rel="manifest" href="../manifest.json">
+
+    <link rel="icon" type="image/png" sizes="32x32" href="../images/icon-192.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="../images/icon-192.png">
+
+</head>
+<body class="tool-page">
+    <div class="container">
+        <button class="tool-theme-btn" onclick="toggleThemeTool()">
+            <i class="fas fa-moon"></i>
+        </button>
+
+        <h1><i class="fas fa-coins"></i> 급여 변환기</h1>
+        
+        <div class="tab-box">
+            <div class="tab active" onclick="setMode('hour')">시급 → 연봉</div>
+            <div class="tab" onclick="setMode('year')">연봉 → 시급</div>
+        </div>
+
+        <div class="radio-group">
+            <label>
+                <input type="radio" name="workType" value="209" checked onclick="updatePlaceholder()">
+                주 5일 (기본 209시간)
+            </label>
+            <label>
+                <input type="radio" name="workType" value="226" onclick="updatePlaceholder()">
+                주 6일 (토요근무 포함)
+            </label>
+        </div>
+        <div class="input-group">
+            <input type="number" id="moneyInput" placeholder="금액 입력">
+            <div style="text-align:right; margin-top:5px; color:var(--text-sub); font-weight:bold;" id="unitText">원 (시급)</div>
+        </div>
+
+        <button class="calc-btn" onclick="convert()">변환하기</button>
+
+        <div class="result-box" id="result" style="display:none;">
+            <table class="result-table">
+                <tr><th>시급</th><td id="resHour">0원</td></tr>
+                <tr><th>일급</th><td id="resDay">0원</td></tr>
+                <tr><th>월급</th><td id="resMonth" class="highlight">0원</td></tr>
+                <tr><th>연봉</th><td id="resYear">0원</td></tr>
+            </table>
+            <p style="text-align:center; font-size:0.8rem; color:var(--text-sub); margin-top:10px;" id="calcStandard">* 주 40시간(209시간) 기준 계산</p>
+        </div>
+
+        <div class="info-section">
+            <h2>💰 토요일 근무가 급여에 미치는 영향</h2>
+            <p>보통 주 5일 근무자의 월급 기준 시간은 <strong>209시간</strong>입니다. 하지만 토요일에도 근무를 한다면(주 6일제), 계산 기준이 달라져야 합니다.</p>
+            <ul>
+                <li><strong>주 5일 (209시간):</strong> 평일 8시간 × 5일 + 주휴수당 8시간</li>
+                <li><strong>주 6일 (226시간):</strong> 평일 8시간 × 5일 + 토요일 4시간 + 주휴수당 8시간</li>
+            </ul>
+            <p>만약 연봉 계약서에 토요일 근무가 포함되어 있다면, 위 옵션에서 '주 6일'을 선택하고 계산해야 정확한 내 시급을 알 수 있습니다. 같은 연봉이라도 근무 시간이 길면 시급은 낮아지기 때문입니다.</p>
+
+            <h3>1. 왜 하필 209시간일까? (주휴수당의 마법)</h3>
+            <p>대한민국 근로기준법에는 '주휴수당'이라는 제도가 있습니다. 일주일 동안 규정된 근무일수를 개근하면, 하루치 일당을 유급으로 더 주는 제도입니다. 즉, 일주일에 5일을 일했지만 돈은 6일 치를 받는 셈입니다.</p>
+            
+            <h3>2. 연봉 4,000만 원의 실수령액은?</h3>
+            <p>연봉 금액에 따라 약 8~15% 정도가 세금(4대보험 등)으로 빠져나갑니다. 본 계산기는 세전 금액을 기준으로 변환하며, 실수령액이 궁금하다면 상단 메뉴의 '실수령액 계산기'를 이용해 보세요.</p>
+        </div>
+
+        <a href="../index.html" class="back-btn">← 메인으로 돌아가기</a>
+    </div>
+
+    <script>
+        let mode = 'hour';
+        
+        function setMode(m) {
+            mode = m;
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            event.target.classList.add('active');
+            updatePlaceholder();
+        }
+
+        function updatePlaceholder() {
+            const unit = document.getElementById('unitText');
+            const input = document.getElementById('moneyInput');
+            
+            if(mode === 'hour') { 
+                unit.innerText = "원 (시급)"; 
+                input.placeholder = "예: 10030"; 
+            } else { 
+                unit.innerText = "원 (연봉)"; 
+                input.placeholder = "예: 40000000"; 
+            }
+        }
+
+        function convert() {
+            const val = parseFloat(document.getElementById('moneyInput').value);
+            if(!val) {
+                showToast("금액을 입력해주세요!");
+                return;
+            }
+
+            // 선택된 시간 기준 가져오기 (209 또는 226)
+            const HOURS = parseInt(document.querySelector('input[name="workType"]:checked').value);
+            
+            let hour, day, month, year;
+
+            if(mode === 'hour') {
+                // 시급 -> 연봉
+                hour = val; 
+                day = hour * 8; 
+                month = hour * HOURS; 
+                year = month * 12;
+            } else {
+                // 연봉 -> 시급
+                year = val; 
+                month = year / 12; 
+                hour = month / HOURS; 
+                day = hour * 8;
+            }
+
+            document.getElementById('result').style.display = 'block';
+            document.getElementById('resHour').innerText = Math.floor(hour).toLocaleString() + "원";
+            document.getElementById('resDay').innerText = Math.floor(day).toLocaleString() + "원";
+            document.getElementById('resMonth').innerText = Math.floor(month).toLocaleString() + "원";
+            document.getElementById('resYear').innerText = Math.floor(year).toLocaleString() + "원";
+            
+            // 기준 텍스트 업데이트
+            document.getElementById('calcStandard').innerText = `* 월 ${HOURS}시간 기준 계산됨`;
+        }
+    </script>
+
+    <script>
+        // 다크모드 토글 기능
+        function toggleThemeTool() {
+            const current = document.documentElement.getAttribute('data-theme');
+            if (current === 'dark') {
+                document.documentElement.setAttribute('data-theme', 'light');
+                localStorage.setItem('theme', 'light');
+            } else {
+                document.documentElement.setAttribute('data-theme', 'dark');
+                localStorage.setItem('theme', 'dark');
+            }
+        }
+    </script>
+
+    <script>
+        // 토스트 알림 기능
+        window.alert = function(message) {
+            showToast(message);
+        };
+
+        function showToast(message) {
+            let container = document.getElementById('toast-container');
+            if (!container) {
+                container = document.createElement('div');
+                container.id = 'toast-container';
+                document.body.appendChild(container);
+            }
+            const toast = document.createElement('div');
+            toast.className = 'toast-message';
+            toast.innerHTML = `<i class="fas fa-check-circle"></i> <span>${message}</span>`;
+            container.appendChild(toast);
+            requestAnimationFrame(() => {
+                setTimeout(() => { toast.classList.add('show'); }, 10);
+            });
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => { 
+                    if(container.contains(toast)) container.removeChild(toast);
+                }, 300);
+            }, 2500);
+        }
+    </script>
+</body>
+</html>
